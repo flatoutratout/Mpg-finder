@@ -7,139 +7,68 @@ export default function Home() {
   const [selectedModel, setSelectedModel] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
 
-  // Load and clean CSV data
   useEffect(() => {
     Papa.parse("/vehicles.csv", {
       download: true,
       header: true,
-      skipEmptyLines: true,
       complete: (results) => {
-        const cleaned = results.data.map((row) => {
-          const cleanedRow = {};
-          Object.keys(row).forEach((key) => {
-            cleanedRow[key.trim()] = row[key]?.trim();
-          });
-          return cleanedRow;
-        });
-        setVehicles(cleaned);
-
-        // Debugging info
-        console.log("Loaded vehicles:", cleaned.length);
-        console.log(
-          "Sample makes:",
-          [...new Set(cleaned.map((v) => v.make))].slice(0, 20)
-        );
+        // Normalize keys to lowercase
+        const normalized = results.data.map((row) => ({
+          make: row.Make?.trim(),
+          model: row.Model?.trim(),
+          year: row.Year?.trim(),
+          ...row, // keep all other fields
+        }));
+        setVehicles(normalized);
       },
     });
   }, []);
 
-  // Dropdown options
-  const makes = [...new Set(vehicles.map((v) => v.make))].filter(Boolean);
-
+  // Unique dropdown values
+  const makes = [...new Set(vehicles.map((v) => v.make))].filter(Boolean).sort();
   const models = [
-    ...new Set(
-      vehicles
-        .filter(
-          (v) => v.make?.toLowerCase() === selectedMake.toLowerCase()
-        )
-        .map((v) => v.model)
-    ),
-  ].filter(Boolean);
-
+    ...new Set(vehicles.filter((v) => v.make === selectedMake).map((v) => v.model)),
+  ].filter(Boolean).sort();
   const years = [
     ...new Set(
       vehicles
-        .filter(
-          (v) =>
-            v.make?.toLowerCase() === selectedMake.toLowerCase() &&
-            v.model?.toLowerCase() === selectedModel.toLowerCase()
-        )
+        .filter((v) => v.make === selectedMake && v.model === selectedModel)
         .map((v) => v.year)
     ),
-  ].filter(Boolean);
-
-  const selectedVehicle = vehicles.find(
-    (v) =>
-      v.make?.toLowerCase() === selectedMake.toLowerCase() &&
-      v.model?.toLowerCase() === selectedModel.toLowerCase() &&
-      v.year?.toString() === selectedYear
-  );
+  ].filter(Boolean).sort((a, b) => b - a); // newest year first
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>MPG Finder</h1>
-
+    <div style={{ padding: "20px" }}>
       {/* Make dropdown */}
-      <div>
-        <label>Make: </label>
-        <select
-          value={selectedMake}
-          onChange={(e) => {
-            setSelectedMake(e.target.value);
-            setSelectedModel("");
-            setSelectedYear("");
-          }}
-        >
-          <option value="">Select Make</option>
-          {makes.map((make) => (
-            <option key={make} value={make}>
-              {make}
-            </option>
-          ))}
-        </select>
-      </div>
+      <select value={selectedMake} onChange={(e) => {
+        setSelectedMake(e.target.value);
+        setSelectedModel("");
+        setSelectedYear("");
+      }}>
+        <option value="">Select Make</option>
+        {makes.map((make, idx) => (
+          <option key={idx} value={make}>{make}</option>
+        ))}
+      </select>
 
       {/* Model dropdown */}
-      {selectedMake && (
-        <div>
-          <label>Model: </label>
-          <select
-            value={selectedModel}
-            onChange={(e) => {
-              setSelectedModel(e.target.value);
-              setSelectedYear("");
-            }}
-          >
-            <option value="">Select Model</option>
-            {models.map((model) => (
-              <option key={model} value={model}>
-                {model}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+      <select value={selectedModel} onChange={(e) => {
+        setSelectedModel(e.target.value);
+        setSelectedYear("");
+      }}>
+        <option value="">Select Model</option>
+        {models.map((model, idx) => (
+          <option key={idx} value={model}>{model}</option>
+        ))}
+      </select>
 
       {/* Year dropdown */}
-      {selectedModel && (
-        <div>
-          <label>Year: </label>
-          <select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-          >
-            <option value="">Select Year</option>
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {/* Display MPG */}
-      {selectedVehicle && (
-        <div style={{ marginTop: "1rem" }}>
-          <h2>
-            {selectedVehicle.make} {selectedVehicle.model}{" "}
-            {selectedVehicle.year}
-          </h2>
-          <p>City MPG: {selectedVehicle.city_mpg}</p>
-          <p>Highway MPG: {selectedVehicle.highway_mpg}</p>
-          <p>Combined MPG: {selectedVehicle.combined_mpg}</p>
-        </div>
-      )}
+      <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+        <option value="">Select Year</option>
+        {years.map((year, idx) => (
+          <option key={idx} value={year}>{year}</option>
+        ))}
+      </select>
     </div>
   );
 }
