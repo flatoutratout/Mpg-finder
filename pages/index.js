@@ -13,18 +13,19 @@ export default function Home() {
       header: true,
       complete: (results) => {
         // Normalize keys to lowercase
-        const normalized = results.data.map((row) => ({
-          make: row.Make?.trim(),
-          model: row.Model?.trim(),
-          year: row.Year?.trim(),
-          ...row, // keep all other fields
-        }));
+        const normalized = results.data.map((row) => {
+          const obj = {};
+          Object.keys(row).forEach((key) => {
+            obj[key.trim().toLowerCase()] = row[key]?.trim();
+          });
+          return obj;
+        });
         setVehicles(normalized);
       },
     });
   }, []);
 
-  // Unique dropdown values
+  // Dropdown values
   const makes = [...new Set(vehicles.map((v) => v.make))].filter(Boolean).sort();
   const models = [
     ...new Set(vehicles.filter((v) => v.make === selectedMake).map((v) => v.model)),
@@ -35,40 +36,85 @@ export default function Home() {
         .filter((v) => v.make === selectedMake && v.model === selectedModel)
         .map((v) => v.year)
     ),
-  ].filter(Boolean).sort((a, b) => b - a); // newest year first
+  ].filter(Boolean).sort((a, b) => b - a);
+
+  // Selected vehicle(s)
+  const selectedVehicle = vehicles.find(
+    (v) =>
+      v.make === selectedMake &&
+      v.model === selectedModel &&
+      v.year === selectedYear
+  );
 
   return (
     <div style={{ padding: "20px" }}>
       {/* Make dropdown */}
-      <select value={selectedMake} onChange={(e) => {
-        setSelectedMake(e.target.value);
-        setSelectedModel("");
-        setSelectedYear("");
-      }}>
+      <select
+        value={selectedMake}
+        onChange={(e) => {
+          setSelectedMake(e.target.value);
+          setSelectedModel("");
+          setSelectedYear("");
+        }}
+      >
         <option value="">Select Make</option>
         {makes.map((make, idx) => (
-          <option key={idx} value={make}>{make}</option>
+          <option key={idx} value={make}>
+            {make}
+          </option>
         ))}
       </select>
 
       {/* Model dropdown */}
-      <select value={selectedModel} onChange={(e) => {
-        setSelectedModel(e.target.value);
-        setSelectedYear("");
-      }}>
+      <select
+        value={selectedModel}
+        onChange={(e) => {
+          setSelectedModel(e.target.value);
+          setSelectedYear("");
+        }}
+      >
         <option value="">Select Model</option>
         {models.map((model, idx) => (
-          <option key={idx} value={model}>{model}</option>
+          <option key={idx} value={model}>
+            {model}
+          </option>
         ))}
       </select>
 
       {/* Year dropdown */}
-      <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+      <select
+        value={selectedYear}
+        onChange={(e) => setSelectedYear(e.target.value)}
+      >
         <option value="">Select Year</option>
         {years.map((year, idx) => (
-          <option key={idx} value={year}>{year}</option>
+          <option key={idx} value={year}>
+            {year}
+          </option>
         ))}
       </select>
+
+      {/* Vehicle details */}
+      {selectedVehicle && (
+        <div style={{ marginTop: "30px" }}>
+          <h2>
+            {selectedVehicle.year} {selectedVehicle.make}{" "}
+            {selectedVehicle.model}
+          </h2>
+          <table border="1" cellPadding="8" style={{ marginTop: "10px" }}>
+            <tbody>
+              {Object.entries(selectedVehicle).map(([key, value]) => (
+                <tr key={key}>
+                  <td style={{ fontWeight: "bold", textTransform: "capitalize" }}>
+                    {key}
+                  </td>
+                  <td>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
