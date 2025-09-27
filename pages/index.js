@@ -1,120 +1,95 @@
-import { useState, useEffect } from "react";
-import Papa from "papaparse";
+import { useState } from "react";
+import fs from "fs";
+import path from "path";
+import VehicleTable from "../components/VehicleTable";
 
-export default function Home() {
-  const [vehicles, setVehicles] = useState([]);
-  const [selectedMake, setSelectedMake] = useState("");
-  const [selectedModel, setSelectedModel] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
+function csvToJson(csv) {
+  const lines = csv.split("\n").filter(line => line.trim() !== "");
+  const headers = lines[0].split(",");
+  return lines.slice(1).map(line => {
+    const values = line.split(",");
+    return headers.reduce((obj, header, i) => {
+      obj[header.trim()] = values[i] ? values[i].trim() : "";
+      return obj;
+    }, {});
+  });
+}
 
-  useEffect(() => {
-    Papa.parse("/vehicles.csv", {
-      download: true,
-      header: true,
-      complete: (results) => {
-        // Normalize keys to lowercase
-        const normalized = results.data.map((row) => {
-          const obj = {};
-          Object.keys(row).forEach((key) => {
-            obj[key.trim().toLowerCase()] = row[key]?.trim();
-          });
-          return obj;
-        });
-        setVehicles(normalized);
-      },
-    });
-  }, []);
+export default function Home({ vehicles }) {
+  const [make, setMake] = useState("");
+  const [model, setModel] = useState("");
+  const [year, setYear] = useState("");
 
-  // Dropdown values
-  const makes = [...new Set(vehicles.map((v) => v.make))].filter(Boolean).sort();
-  const models = [
-    ...new Set(vehicles.filter((v) => v.make === selectedMake).map((v) => v.model)),
-  ].filter(Boolean).sort();
-  const years = [
-    ...new Set(
-      vehicles
-        .filter((v) => v.make === selectedMake && v.model === selectedModel)
-        .map((v) => v.year)
-    ),
-  ].filter(Boolean).sort((a, b) => b - a);
+  const makes = [...new Set(vehicles.map(v => v.Make))];
+  const models = [...new Set(vehicles.filter(v => v.Make === make).map(v => v.Model))];
+  const years = [...new Set(vehicles.filter(v => v.Make === make && v.Model === model).map(v => v.Year))];
 
-  // Selected vehicle(s)
   const selectedVehicle = vehicles.find(
-    (v) =>
-      v.make === selectedMake &&
-      v.model === selectedModel &&
-      v.year === selectedYear
+    v => v.Make === make && v.Model === model && v.Year === year
   );
 
   return (
-    <div style={{ padding: "20px" }}>
-      {/* Make dropdown */}
-      <select
-        value={selectedMake}
-        onChange={(e) => {
-          setSelectedMake(e.target.value);
-          setSelectedModel("");
-          setSelectedYear("");
-        }}
-      >
-        <option value="">Select Make</option>
-        {makes.map((make, idx) => (
-          <option key={idx} value={make}>
-            {make}
-          </option>
-        ))}
-      </select>
+    <div className="p-8 max-w-4xl mx-auto">
+      <h1 className="text-4xl font-bold mb-8 text-center">MPG Finder</h1>
 
-      {/* Model dropdown */}
-      <select
-        value={selectedModel}
-        onChange={(e) => {
-          setSelectedModel(e.target.value);
-          setSelectedYear("");
-        }}
-      >
-        <option value="">Select Model</option>
-        {models.map((model, idx) => (
-          <option key={idx} value={model}>
-            {model}
-          </option>
-        ))}
-      </select>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <select
+          className="p-3 border rounded-lg"
+          value={make}
+          onChange={e => {
+            setMake(e.target.value);
+            setModel("");
+            setYear("");
+          }}
+        >
+          <option value="">Select Make</option>
+          {makes.map(m => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
 
-      {/* Year dropdown */}
-      <select
-        value={selectedYear}
-        onChange={(e) => setSelectedYear(e.target.value)}
-      >
-        <option value="">Select Year</option>
-        {years.map((year, idx) => (
-          <option key={idx} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
+        <select
+          className="p-3 border rounded-lg"
+          value={model}
+          onChange={e => {
+            setModel(e.target.value);
+            setYear("");
+          }}
+          disabled={!make}
+        >
+          <option value="">Select Model</option>
+          {models.map(m => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
 
-      {/* Vehicle details */}
-      {selectedVehicle && (
-        <div style={{ marginTop: "30px" }}>
-          <h2>
-            {selectedVehicle.year} {selectedVehicle.make}{" "}
-            {selectedVehicle.model}
-          </h2>
-          <table border="1" cellPadding="8" style={{ marginTop: "10px" }}>
-            <tbody>
-              {Object.entries(selectedVehicle).map(([key, value]) => (
-                <tr key={key}>
-                  <td style={{ fontWeight: "bold", textTransform: "capitalize" }}>
-                    {key}
-                  </td>
-                  <td>{value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+        <select
+          className="p-3 border rounded-lg"
+          value={year}
+          onChange={e => setYear(e.target.value)}
+          disabled={!model}
+        >
+          <option value="">Select Year</option>
+          {years.map(y => (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {selectedVehicle && <VehicleTable vehicle={selectedVehicle} />}
     </div>
   );
+}
+
+export async function getStaticProps() {
+  const file = path.join(process.cwd(), "public", "vehicles.csv");
+  const csv = fs.readFileSync(file, "utf8");
+  const rows = csvToJson(csv);
+  return { props: { vehicles: rows } };
 }
