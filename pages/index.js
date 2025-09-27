@@ -6,124 +6,138 @@ export default function Home() {
   const [selectedMake, setSelectedMake] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
 
-  // Load vehicles.csv from public/
+  // Load and clean CSV data
   useEffect(() => {
     Papa.parse("/vehicles.csv", {
       download: true,
       header: true,
+      skipEmptyLines: true,
       complete: (results) => {
-        setVehicles(results.data);
+        const cleaned = results.data.map((row) => {
+          const cleanedRow = {};
+          Object.keys(row).forEach((key) => {
+            cleanedRow[key.trim()] = row[key]?.trim();
+          });
+          return cleanedRow;
+        });
+        setVehicles(cleaned);
+
+        // Debugging info
+        console.log("Loaded vehicles:", cleaned.length);
+        console.log(
+          "Sample makes:",
+          [...new Set(cleaned.map((v) => v.make))].slice(0, 20)
+        );
       },
     });
   }, []);
 
-  // Unique dropdown values
+  // Dropdown options
   const makes = [...new Set(vehicles.map((v) => v.make))].filter(Boolean);
+
   const models = [
     ...new Set(
-      vehicles.filter((v) => v.make === selectedMake).map((v) => v.model)
+      vehicles
+        .filter(
+          (v) => v.make?.toLowerCase() === selectedMake.toLowerCase()
+        )
+        .map((v) => v.model)
     ),
   ].filter(Boolean);
+
   const years = [
     ...new Set(
       vehicles
-        .filter((v) => v.make === selectedMake && v.model === selectedModel)
+        .filter(
+          (v) =>
+            v.make?.toLowerCase() === selectedMake.toLowerCase() &&
+            v.model?.toLowerCase() === selectedModel.toLowerCase()
+        )
         .map((v) => v.year)
     ),
   ].filter(Boolean);
 
-  // Handle selection
-  useEffect(() => {
-    if (selectedMake && selectedModel && selectedYear) {
-      const match = vehicles.find(
-        (v) =>
-          v.make === selectedMake &&
-          v.model === selectedModel &&
-          v.year === selectedYear
-      );
-      setSelectedVehicle(match || null);
-    } else {
-      setSelectedVehicle(null);
-    }
-  }, [selectedMake, selectedModel, selectedYear, vehicles]);
+  const selectedVehicle = vehicles.find(
+    (v) =>
+      v.make?.toLowerCase() === selectedMake.toLowerCase() &&
+      v.model?.toLowerCase() === selectedModel.toLowerCase() &&
+      v.year?.toString() === selectedYear
+  );
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
+    <div style={{ padding: "2rem" }}>
       <h1>MPG Finder</h1>
 
       {/* Make dropdown */}
-      <label htmlFor="make">Make: </label>
-      <select
-        id="make"
-        value={selectedMake}
-        onChange={(e) => {
-          setSelectedMake(e.target.value);
-          setSelectedModel("");
-          setSelectedYear("");
-        }}
-      >
-        <option value="">Select Make</option>
-        {makes.map((make, idx) => (
-          <option key={idx} value={make}>
-            {make}
-          </option>
-        ))}
-      </select>
+      <div>
+        <label>Make: </label>
+        <select
+          value={selectedMake}
+          onChange={(e) => {
+            setSelectedMake(e.target.value);
+            setSelectedModel("");
+            setSelectedYear("");
+          }}
+        >
+          <option value="">Select Make</option>
+          {makes.map((make) => (
+            <option key={make} value={make}>
+              {make}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Model dropdown */}
-      <label htmlFor="model" style={{ marginLeft: "1rem" }}>
-        Model:{" "}
-      </label>
-      <select
-        id="model"
-        value={selectedModel}
-        onChange={(e) => {
-          setSelectedModel(e.target.value);
-          setSelectedYear("");
-        }}
-        disabled={!selectedMake}
-      >
-        <option value="">Select Model</option>
-        {models.map((model, idx) => (
-          <option key={idx} value={model}>
-            {model}
-          </option>
-        ))}
-      </select>
+      {selectedMake && (
+        <div>
+          <label>Model: </label>
+          <select
+            value={selectedModel}
+            onChange={(e) => {
+              setSelectedModel(e.target.value);
+              setSelectedYear("");
+            }}
+          >
+            <option value="">Select Model</option>
+            {models.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Year dropdown */}
-      <label htmlFor="year" style={{ marginLeft: "1rem" }}>
-        Year:{" "}
-      </label>
-      <select
-        id="year"
-        value={selectedYear}
-        onChange={(e) => setSelectedYear(e.target.value)}
-        disabled={!selectedModel}
-      >
-        <option value="">Select Year</option>
-        {years.map((year, idx) => (
-          <option key={idx} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
+      {selectedModel && (
+        <div>
+          <label>Year: </label>
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+          >
+            <option value="">Select Year</option>
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
-      {/* Vehicle details */}
+      {/* Display MPG */}
       {selectedVehicle && (
-        <div style={{ marginTop: "2rem", border: "1px solid #ccc", padding: "1rem", borderRadius: "8px" }}>
+        <div style={{ marginTop: "1rem" }}>
           <h2>
-            {selectedVehicle.year} {selectedVehicle.make} {selectedVehicle.model}
+            {selectedVehicle.make} {selectedVehicle.model}{" "}
+            {selectedVehicle.year}
           </h2>
-          <p><strong>Displacement:</strong> {selectedVehicle.displ}</p>
-          <p><strong>Cylinders:</strong> {selectedVehicle.cylinders}</p>
-          <p><strong>Transmission:</strong> {selectedVehicle.trany}</p>
-          <p><strong>Fuel Type:</strong> {selectedVehicle.fuelType}</p>
-          <p><strong>City MPG:</strong> {selectedVehicle.city08}</p>
-          <p><strong>Highway MPG:</strong> {selectedVehicle.highway08}</p>
-          <p><strong>Combined MPG:</strong> {selectedVehicle.comb08}</p>
+          <p>City MPG: {selectedVehicle.city_mpg}</p>
+          <p>Highway MPG: {selectedVehicle.highway_mpg}</p>
+          <p>Combined MPG: {selectedVehicle.combined_mpg}</p>
         </div>
       )}
     </div>
