@@ -1,93 +1,99 @@
-import fs from "fs";
-import path from "path";
-import Papa from "papaparse";
 import { useState } from "react";
-import DataTable from "react-data-table-component";
+import Papa from "papaparse";
 
 export default function Home({ vehicles }) {
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
   const [year, setYear] = useState("");
-  const [fuel, setFuel] = useState("");
 
-  // unique filter values
-  const makes = [...new Set(vehicles.map(v => v.make))];
-  const models = [...new Set(vehicles.filter(v => !make || v.make === make).map(v => v.model))];
-  const years = [...new Set(vehicles.filter(v => !make || v.make === make).map(v => v.year))];
-  const fuels = [...new Set(vehicles.map(v => v.fuelType))];
+  const makes = [...new Set(vehicles.map((v) => v.make))].sort();
+  const models = [...new Set(vehicles.filter((v) => v.make === make).map((v) => v.model))].sort();
+  const years = [...new Set(vehicles.filter((v) => v.make === make && v.model === model).map((v) => v.year))].sort();
 
-  // filtered data
-  const filtered = vehicles.filter(v =>
-    (!make || v.make === make) &&
-    (!model || v.model === model) &&
-    (!year || v.year === year) &&
-    (!fuel || v.fuelType === fuel)
-  );
-
-  // columns for the table
-  const columns = [
-    { name: "Make", selector: row => row.make, sortable: true },
-    { name: "Model", selector: row => row.model, sortable: true },
-    { name: "Year", selector: row => row.year, sortable: true },
-    { name: "Fuel", selector: row => row.fuelType, sortable: true },
-    { name: "City MPG", selector: row => row.cityMPG, sortable: true },
-    { name: "Highway MPG", selector: row => row.highwayMPG, sortable: true },
-    { name: "Combined MPG", selector: row => row.combinedMPG, sortable: true },
-    { name: "CO₂ (g/km)", selector: row => row.co2Emissions, sortable: true },
-    { name: "Range (miles)", selector: row => row.range, sortable: true },
-    { name: "Cylinders", selector: row => row.cylinders, sortable: true },
-    { name: "Displacement", selector: row => row.displacement, sortable: true },
-    { name: "Drive", selector: row => row.drive, sortable: true },
-    { name: "Transmission", selector: row => row.trany, sortable: true },
-  ];
+  const selected = vehicles.find((v) => v.make === make && v.model === model && v.year === year);
 
   return (
-    <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
-      <h1 style={{ textAlign: "center" }}>🚗 MPG Finder</h1>
+    <div style={{ fontFamily: "Arial, sans-serif", maxWidth: "900px", margin: "0 auto", padding: "20px" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>MPG Finder</h1>
 
-      {/* Filters */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", justifyContent: "center" }}>
-        <select value={make} onChange={e => setMake(e.target.value)}>
-          <option value="">Any Make</option>
-          {makes.map(m => <option key={m} value={m}>{m}</option>)}
+      {/* Dropdowns */}
+      <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "20px" }}>
+        <select value={make} onChange={(e) => setMake(e.target.value)}>
+          <option value="">Select Make</option>
+          {makes.map((m) => (
+            <option key={m} value={m}>{m}</option>
+          ))}
         </select>
 
-        <select value={model} onChange={e => setModel(e.target.value)}>
-          <option value="">Any Model</option>
-          {models.map(m => <option key={m} value={m}>{m}</option>)}
+        <select value={model} onChange={(e) => setModel(e.target.value)} disabled={!make}>
+          <option value="">Select Model</option>
+          {models.map((m) => (
+            <option key={m} value={m}>{m}</option>
+          ))}
         </select>
 
-        <select value={year} onChange={e => setYear(e.target.value)}>
-          <option value="">Any Year</option>
-          {years.map(y => <option key={y} value={y}>{y}</option>)}
-        </select>
-
-        <select value={fuel} onChange={e => setFuel(e.target.value)}>
-          <option value="">Any Fuel</option>
-          {fuels.map(f => <option key={f} value={f}>{f}</option>)}
+        <select value={year} onChange={(e) => setYear(e.target.value)} disabled={!model}>
+          <option value="">Select Year</option>
+          {years.map((y) => (
+            <option key={y} value={y}>{y}</option>
+          ))}
         </select>
       </div>
 
-      {/* Data Table */}
-      <DataTable
-        columns={columns}
-        data={filtered}
-        pagination
-        highlightOnHover
-        striped
-        defaultSortFieldId={3}
-      />
+      {/* Vehicle Data Table */}
+      {selected && (
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
+          <thead>
+            <tr style={{ background: "#f4f4f4" }}>
+              <th style={th}>Make</th>
+              <th style={th}>Model</th>
+              <th style={th}>Year</th>
+              <th style={th}>Fuel</th>
+              <th style={th}>City MPG</th>
+              <th style={th}>Highway MPG</th>
+              <th style={th}>Combined MPG</th>
+              <th style={th}>CO₂</th>
+              <th style={th}>Cylinders</th>
+              <th style={th}>Displacement</th>
+              <th style={th}>Drive</th>
+              <th style={th}>Range</th>
+              <th style={th}>Transmission</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={td}>{selected.make}</td>
+              <td style={td}>{selected.model}</td>
+              <td style={td}>{selected.year}</td>
+              <td style={td}>{selected.fuelType}</td>
+              <td style={td}>{selected.cityMPG}</td>
+              <td style={td}>{selected.highwayMPG}</td>
+              <td style={td}>{selected.combinedMPG}</td>
+              <td style={td}>{selected.co2Emissions}</td>
+              <td style={td}>{selected.cylinders}</td>
+              <td style={td}>{selected.displacement}</td>
+              <td style={td}>{selected.drive}</td>
+              <td style={td}>{selected.range}</td>
+              <td style={td}>{selected.trany}</td>
+            </tr>
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
 
+const th = { border: "1px solid #ddd", padding: "8px", textAlign: "center" };
+const td = { border: "1px solid #ddd", padding: "8px", textAlign: "center" };
+
 export async function getStaticProps() {
-  const file = path.join(process.cwd(), "data", "vehicles.csv");
-  const csv = fs.readFileSync(file, "utf8");
+  // Fetch vehicles.csv from the public folder
+  const res = await fetch("http://localhost:3000/vehicles.csv");
+  const csv = await res.text();
+
   const parsed = Papa.parse(csv, { header: true }).data;
 
-  // Normalize column names to match our selectors
-  const vehicles = parsed.map(row => ({
+  const vehicles = parsed.map((row) => ({
     make: row.make,
     model: row.model,
     year: row.year,
