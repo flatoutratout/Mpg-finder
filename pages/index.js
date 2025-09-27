@@ -1,28 +1,31 @@
 import { useState } from "react";
 import DataTable from "react-data-table-component";
+import fs from "fs";
+import path from "path";
 import Papa from "papaparse";
 
 export default function Home({ vehicles }) {
-  const [selectedMake, setSelectedMake] = useState("");
-  const [selectedModel, setSelectedModel] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
+  const [make, setMake] = useState("");
+  const [model, setModel] = useState("");
+  const [year, setYear] = useState("");
 
+  // Extract unique dropdown values
   const makes = [...new Set(vehicles.map((v) => v.make))].sort();
-  const models = [...new Set(vehicles.filter((v) => v.make === selectedMake).map((v) => v.model))].sort();
-  const years = [...new Set(vehicles.filter((v) => v.model === selectedModel).map((v) => v.year))].sort();
+  const models = [...new Set(vehicles.filter((v) => v.make === make).map((v) => v.model))].sort();
+  const years = [...new Set(vehicles.filter((v) => v.make === make && v.model === model).map((v) => v.year))].sort();
 
   const filtered = vehicles.filter(
     (v) =>
-      (!selectedMake || v.make === selectedMake) &&
-      (!selectedModel || v.model === selectedModel) &&
-      (!selectedYear || v.year === selectedYear)
+      (!make || v.make === make) &&
+      (!model || v.model === model) &&
+      (!year || v.year === year)
   );
 
   const columns = [
     { name: "Make", selector: (row) => row.make, sortable: true },
     { name: "Model", selector: (row) => row.model, sortable: true },
     { name: "Year", selector: (row) => row.year, sortable: true },
-    { name: "Fuel", selector: (row) => row.fuelType },
+    { name: "Fuel Type", selector: (row) => row.fuelType },
     { name: "City MPG", selector: (row) => row.cityMPG },
     { name: "Highway MPG", selector: (row) => row.highwayMPG },
     { name: "Combined MPG", selector: (row) => row.combinedMPG },
@@ -35,74 +38,53 @@ export default function Home({ vehicles }) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4">
-      <h1 className="text-4xl font-bold mb-8 text-gray-800">MPG Finder</h1>
+    <div style={{ padding: "2rem", maxWidth: "1200px", margin: "0 auto" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "2rem" }}>MPG Finder</h1>
 
-      <div className="flex gap-4 mb-8">
-        <select
-          value={selectedMake}
-          onChange={(e) => {
-            setSelectedMake(e.target.value);
-            setSelectedModel("");
-            setSelectedYear("");
-          }}
-          className="border p-2 rounded"
-        >
+      <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginBottom: "2rem" }}>
+        <select value={make} onChange={(e) => setMake(e.target.value)}>
           <option value="">Select Make</option>
-          {makes.map((make) => (
-            <option key={make} value={make}>
-              {make}
-            </option>
+          {makes.map((m) => (
+            <option key={m} value={m}>{m}</option>
           ))}
         </select>
 
-        <select
-          value={selectedModel}
-          onChange={(e) => {
-            setSelectedModel(e.target.value);
-            setSelectedYear("");
-          }}
-          className="border p-2 rounded"
-        >
+        <select value={model} onChange={(e) => setModel(e.target.value)} disabled={!make}>
           <option value="">Select Model</option>
-          {models.map((model) => (
-            <option key={model} value={model}>
-              {model}
-            </option>
+          {models.map((m) => (
+            <option key={m} value={m}>{m}</option>
           ))}
         </select>
 
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-          className="border p-2 rounded"
-        >
+        <select value={year} onChange={(e) => setYear(e.target.value)} disabled={!model}>
           <option value="">Select Year</option>
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
+          {years.map((y) => (
+            <option key={y} value={y}>{y}</option>
           ))}
         </select>
       </div>
 
-      <div className="w-full max-w-6xl bg-white shadow rounded-lg p-6">
-        <DataTable columns={columns} data={filtered} pagination highlightOnHover striped />
-      </div>
+      <DataTable
+        columns={columns}
+        data={filtered}
+        pagination
+        highlightOnHover
+        striped
+        dense
+      />
     </div>
   );
 }
 
+// ✅ FIXED: Load CSV directly from disk at build time
 export async function getStaticProps() {
-  // Load CSV from public folder
-  const res = await fetch("http://localhost:3000/vehicles.csv");
-  const csv = await res.text();
+  const file = path.join(process.cwd(), "public", "vehicles.csv");
+  const csv = fs.readFileSync(file, "utf8");
 
   const parsed = Papa.parse(csv, { header: true }).data;
 
-  // Clean & normalize data to avoid undefined
   const vehicles = parsed
-    .filter((row) => row.make && row.model && row.year) // skip empty rows
+    .filter((row) => row.make && row.model && row.year)
     .map((row) => ({
       make: row.make || null,
       model: row.model || null,
