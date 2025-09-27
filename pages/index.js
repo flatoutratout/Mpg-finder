@@ -12,7 +12,6 @@ export default function Home() {
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
-  // Step 1: Load CSV once, but only keep lightweight dropdown data
   useEffect(() => {
     Papa.parse("/vehicles.csv", {
       download: true,
@@ -21,14 +20,12 @@ export default function Home() {
         const rows = results.data.filter((row) => row.make && row.model && row.year);
         setVehicles(rows);
 
-        // Unique makes
         const uniqueMakes = [...new Set(rows.map((v) => v.make))].sort();
         setMakes(uniqueMakes);
       },
     });
   }, []);
 
-  // Step 2: Update models when make changes
   useEffect(() => {
     if (selectedMake) {
       const uniqueModels = [
@@ -42,7 +39,6 @@ export default function Home() {
     }
   }, [selectedMake, vehicles]);
 
-  // Step 3: Update years when model changes
   useEffect(() => {
     if (selectedModel) {
       const uniqueYears = [
@@ -51,14 +47,13 @@ export default function Home() {
             .filter((v) => v.make === selectedMake && v.model === selectedModel)
             .map((v) => v.year)
         ),
-      ].sort((a, b) => b - a); // newest first
+      ].sort((a, b) => b - a);
       setYears(uniqueYears);
       setSelectedYear("");
       setSelectedVehicle(null);
     }
   }, [selectedModel, selectedMake, vehicles]);
 
-  // Step 4: Select vehicle details when year chosen
   useEffect(() => {
     if (selectedYear) {
       const vehicle = vehicles.find(
@@ -69,73 +64,77 @@ export default function Home() {
   }, [selectedYear, selectedMake, selectedModel, vehicles]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <h1 className="text-3xl font-bold text-center mb-6">MPG Finder</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-6">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-8">
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
+          🚗 MPG Finder
+        </h1>
 
-      <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
-        {/* Make dropdown */}
-        <select
-          className="p-2 border rounded"
-          value={selectedMake}
-          onChange={(e) => setSelectedMake(e.target.value)}
-        >
-          <option value="">Select Make</option>
-          {makes.map((make) => (
-            <option key={make} value={make}>
-              {make}
-            </option>
-          ))}
-        </select>
+        {/* Dropdowns */}
+        <div className="flex flex-col md:flex-row gap-4 justify-center mb-10">
+          <select
+            className="p-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+            value={selectedMake}
+            onChange={(e) => setSelectedMake(e.target.value)}
+          >
+            <option value="">Select Make</option>
+            {makes.map((make) => (
+              <option key={make} value={make}>
+                {make}
+              </option>
+            ))}
+          </select>
 
-        {/* Model dropdown */}
-        <select
-          className="p-2 border rounded"
-          value={selectedModel}
-          onChange={(e) => setSelectedModel(e.target.value)}
-          disabled={!selectedMake}
-        >
-          <option value="">Select Model</option>
-          {models.map((model) => (
-            <option key={model} value={model}>
-              {model}
-            </option>
-          ))}
-        </select>
+          <select
+            className="p-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+            value={selectedModel}
+            onChange={(e) => setSelectedModel(e.target.value)}
+            disabled={!selectedMake}
+          >
+            <option value="">Select Model</option>
+            {models.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
 
-        {/* Year dropdown */}
-        <select
-          className="p-2 border rounded"
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-          disabled={!selectedModel}
-        >
-          <option value="">Select Year</option>
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Vehicle details */}
-      {selectedVehicle && (
-        <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">
-            {selectedVehicle.make} {selectedVehicle.model} ({selectedVehicle.year})
-          </h2>
-          <table className="table-auto w-full border-collapse border">
-            <tbody>
-              {Object.entries(selectedVehicle).map(([key, value]) => (
-                <tr key={key} className="border">
-                  <td className="p-2 font-medium bg-gray-100 border">{key}</td>
-                  <td className="p-2 border">{value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <select
+            className="p-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            disabled={!selectedModel}
+          >
+            <option value="">Select Year</option>
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
+
+        {/* Vehicle details */}
+        {selectedVehicle && (
+          <div className="bg-gray-50 border rounded-xl shadow-inner p-6">
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+              {selectedVehicle.make} {selectedVehicle.model} ({selectedVehicle.year})
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Object.entries(selectedVehicle).map(([key, value]) => (
+                <div
+                  key={key}
+                  className="p-3 bg-white rounded-lg shadow-sm border"
+                >
+                  <p className="text-sm text-gray-500 uppercase">{key}</p>
+                  <p className="text-lg font-medium text-gray-800">{value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
