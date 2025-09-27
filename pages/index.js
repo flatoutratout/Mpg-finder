@@ -1,56 +1,78 @@
-import fs from 'fs';
-import path from 'path';
-import { useState, useMemo } from 'react';
-import Layout from '../components/Layout';
-import VehicleTable from '../components/VehicleTable';
+import { useState, useEffect } from "react";
+import Papa from "papaparse";
 
-export default function Home({ vehicles }) {
-  const [query, setQuery] = useState('');
-  const [fuel, setFuel] = useState('Any');
-  const [make, setMake] = useState('Any');
+export default function Home() {
+  const [vehicles, setVehicles] = useState([]);
+  const [selectedMake, setSelectedMake] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
 
-  const makes = useMemo(() => ['Any', ...Array.from(new Set(vehicles.map(v => v.make))).sort()], [vehicles]);
-  const fuels = useMemo(() => ['Any', ...Array.from(new Set(vehicles.map(v => v.fuel))).sort()], [vehicles]);
+  // Load vehicles.csv from public/
+  useEffect(() => {
+    Papa.parse("/vehicles.csv", {
+      download: true,
+      header: true,
+      complete: (results) => {
+        setVehicles(results.data);
+      },
+    });
+  }, []);
 
-  const filtered = vehicles.filter(v => {
-    const q = query.trim().toLowerCase();
-    if (q && !(v.make + ' ' + v.model).toLowerCase().includes(q)) return false;
-    if (fuel !== 'Any' && v.fuel !== fuel) return false;
-    if (make !== 'Any' && v.make !== make) return false;
-    return true;
-  });
+  // Get unique dropdown values
+  const makes = [...new Set(vehicles.map((v) => v.make))].filter(Boolean);
+  const models = [
+    ...new Set(
+      vehicles.filter((v) => v.make === selectedMake).map((v) => v.model)
+    ),
+  ].filter(Boolean);
+  const years = [
+    ...new Set(
+      vehicles
+        .filter((v) => v.make === selectedMake && v.model === selectedModel)
+        .map((v) => v.year)
+    ),
+  ].filter(Boolean);
 
   return (
-    <Layout meta={{ title: 'MPG Finder — Vehicle MPG Database', description: 'Search MPG, CO2 and range for thousands of vehicle models.' }}>
-      <div className="max-w-6xl mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-4">MPG Finder</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-          <input value={query} onChange={e => setQuery(e.target.value)} className="p-2 border rounded" placeholder="Search make or model" />
-          <select value={fuel} onChange={e => setFuel(e.target.value)} className="p-2 border rounded">{fuels.map(f => <option key={f} value={f}>{f}</option>)}</select>
-          <select value={make} onChange={e => setMake(e.target.value)} className="p-2 border rounded">{makes.map(m => <option key={m} value={m}>{m}</option>)}</select>
-        </div>
+    <div>
+      {/* Make dropdown */}
+      <select
+        value={selectedMake}
+        onChange={(e) => setSelectedMake(e.target.value)}
+      >
+        <option value="">Select Make</option>
+        {makes.map((make, idx) => (
+          <option key={idx} value={make}>
+            {make}
+          </option>
+        ))}
+      </select>
 
-        <VehicleTable vehicles={filtered} />
-      </div>
-    </Layout>
+      {/* Model dropdown */}
+      <select
+        value={selectedModel}
+        onChange={(e) => setSelectedModel(e.target.value)}
+      >
+        <option value="">Select Model</option>
+        {models.map((model, idx) => (
+          <option key={idx} value={model}>
+            {model}
+          </option>
+        ))}
+      </select>
+
+      {/* Year dropdown */}
+      <select
+        value={selectedYear}
+        onChange={(e) => setSelectedYear(e.target.value)}
+      >
+        <option value="">Select Year</option>
+        {years.map((year, idx) => (
+          <option key={idx} value={year}>
+            {year}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
-
-export async function getStaticProps() {
-  const file = path.join(process.cwd(), 'data', 'mpg-sample.csv');
-  const csv = fs.readFileSync(file, 'utf8');
-  const rows = csvToJson(csv);
-  return { props: { vehicles: rows } };
-}
-
-function csvToJson(csv) {
-  const lines = csv.split('\n').filter(Boolean);
-  const headers = lines.shift().split(',');
-  return lines.map(l => {
-    const cols = l.split(',');
-    const obj = {};
-    headers.forEach((h, i) => { obj[h] = isNumeric(cols[i]) ? Number(cols[i]) : cols[i]; });
-    return obj;
-  });
-}
-function isNumeric(n){ return !isNaN(n) && n !== '' }
