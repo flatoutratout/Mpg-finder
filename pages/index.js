@@ -1,8 +1,13 @@
 import { useState } from "react";
-import DataTable from "react-data-table-component";
+import dynamic from "next/dynamic";
 import fs from "fs";
 import path from "path";
 import Papa from "papaparse";
+
+// ✅ Import DataTable dynamically (client only, no SSR)
+const DataTable = dynamic(() => import("react-data-table-component"), {
+  ssr: false,
+});
 
 export default function Home({ vehicles }) {
   const [make, setMake] = useState("");
@@ -64,6 +69,7 @@ export default function Home({ vehicles }) {
         </select>
       </div>
 
+      {/* ✅ Client-only DataTable (no hydration error) */}
       <DataTable
         columns={columns}
         data={filtered}
@@ -76,7 +82,6 @@ export default function Home({ vehicles }) {
   );
 }
 
-// ✅ FIXED: Load CSV directly from disk at build time
 export async function getStaticProps() {
   const file = path.join(process.cwd(), "public", "vehicles.csv");
   const csv = fs.readFileSync(file, "utf8");
