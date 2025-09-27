@@ -113,21 +113,21 @@ export default function Home({}) {
             </thead>
             <tbody>
               {filtered.map((v, idx) => (
-                <tr key={idx} className="hover:bg-gray-50">
-                  <td className="border border-gray-200 px-3 py-2">{v.make}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.model}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.year}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.fuelType}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.cityMPG}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.highwayMPG}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.combinedMPG}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.co2Emissions}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.cylinders}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.displacement}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.drive}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.range}</td>
-                  <td className="border border-gray-200 px-3 py-2">{v.trany}</td>
-                </tr>
+    <tr key={idx} className="hover:bg-gray-50">
+      <td className="border border-gray-200 px-3 py-2">{v.make}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.model}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.year}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.fuelType}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.city08}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.highway08}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.comb08}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.co2}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.cylinders}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.displ}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.drive}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.range}</td>
+      <td className="border border-gray-200 px-3 py-2">{v.trany}</td>
+    </tr>
               ))}
             </tbody>
           </table>
