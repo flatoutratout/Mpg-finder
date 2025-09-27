@@ -16,8 +16,26 @@ export default function Home() {
       const response = await fetch("/vehicles.csv");
       const text = await response.text();
       const parsed = Papa.parse(text, { header: true }).data;
-      setVehicles(parsed);
-      setFilteredVehicles(parsed);
+
+      // Normalize field names
+      const mapped = parsed.map((row) => ({
+        make: row.make || "",
+        model: row.model || "",
+        year: row.year || "",
+        fuelType: row.fuelType || row.fuel || "",
+        cityMPG: row.city08 || row.city_mpg || row.cityMPG || "",
+        highwayMPG: row.highway08 || row.highway_mpg || row.highwayMPG || "",
+        combinedMPG: row.comb08 || row.combined_mpg || row.combinedMPG || "",
+        co2Emissions: row.co2 || row.co2Emissions || "",
+        cylinders: row.cylinders || "",
+        displacement: row.displ || row.displacement || "",
+        drive: row.drive || "",
+        range: row.range || "",
+        trany: row.trany || row.transmission || "",
+      }));
+
+      setVehicles(mapped);
+      setFilteredVehicles(mapped);
     }
     loadCSV();
   }, []);
