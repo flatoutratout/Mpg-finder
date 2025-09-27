@@ -1,95 +1,141 @@
-import { useState } from "react";
-import fs from "fs";
-import path from "path";
-import VehicleTable from "../components/VehicleTable";
+import { useState, useEffect } from "react";
+import Papa from "papaparse";
 
-function csvToJson(csv) {
-  const lines = csv.split("\n").filter(line => line.trim() !== "");
-  const headers = lines[0].split(",");
-  return lines.slice(1).map(line => {
-    const values = line.split(",");
-    return headers.reduce((obj, header, i) => {
-      obj[header.trim()] = values[i] ? values[i].trim() : "";
-      return obj;
-    }, {});
-  });
-}
+export default function Home() {
+  const [vehicles, setVehicles] = useState([]);
+  const [makes, setMakes] = useState([]);
+  const [models, setModels] = useState([]);
+  const [years, setYears] = useState([]);
 
-export default function Home({ vehicles }) {
-  const [make, setMake] = useState("");
-  const [model, setModel] = useState("");
-  const [year, setYear] = useState("");
+  const [selectedMake, setSelectedMake] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
 
-  const makes = [...new Set(vehicles.map(v => v.Make))];
-  const models = [...new Set(vehicles.filter(v => v.Make === make).map(v => v.Model))];
-  const years = [...new Set(vehicles.filter(v => v.Make === make && v.Model === model).map(v => v.Year))];
+  // Step 1: Load CSV once, but only keep lightweight dropdown data
+  useEffect(() => {
+    Papa.parse("/vehicles.csv", {
+      download: true,
+      header: true,
+      complete: (results) => {
+        const rows = results.data.filter((row) => row.make && row.model && row.year);
+        setVehicles(rows);
 
-  const selectedVehicle = vehicles.find(
-    v => v.Make === make && v.Model === model && v.Year === year
-  );
+        // Unique makes
+        const uniqueMakes = [...new Set(rows.map((v) => v.make))].sort();
+        setMakes(uniqueMakes);
+      },
+    });
+  }, []);
+
+  // Step 2: Update models when make changes
+  useEffect(() => {
+    if (selectedMake) {
+      const uniqueModels = [
+        ...new Set(vehicles.filter((v) => v.make === selectedMake).map((v) => v.model)),
+      ].sort();
+      setModels(uniqueModels);
+      setSelectedModel("");
+      setSelectedYear("");
+      setYears([]);
+      setSelectedVehicle(null);
+    }
+  }, [selectedMake, vehicles]);
+
+  // Step 3: Update years when model changes
+  useEffect(() => {
+    if (selectedModel) {
+      const uniqueYears = [
+        ...new Set(
+          vehicles
+            .filter((v) => v.make === selectedMake && v.model === selectedModel)
+            .map((v) => v.year)
+        ),
+      ].sort((a, b) => b - a); // newest first
+      setYears(uniqueYears);
+      setSelectedYear("");
+      setSelectedVehicle(null);
+    }
+  }, [selectedModel, selectedMake, vehicles]);
+
+  // Step 4: Select vehicle details when year chosen
+  useEffect(() => {
+    if (selectedYear) {
+      const vehicle = vehicles.find(
+        (v) => v.make === selectedMake && v.model === selectedModel && v.year === selectedYear
+      );
+      setSelectedVehicle(vehicle || null);
+    }
+  }, [selectedYear, selectedMake, selectedModel, vehicles]);
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-4xl font-bold mb-8 text-center">MPG Finder</h1>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <h1 className="text-3xl font-bold text-center mb-6">MPG Finder</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
+        {/* Make dropdown */}
         <select
-          className="p-3 border rounded-lg"
-          value={make}
-          onChange={e => {
-            setMake(e.target.value);
-            setModel("");
-            setYear("");
-          }}
+          className="p-2 border rounded"
+          value={selectedMake}
+          onChange={(e) => setSelectedMake(e.target.value)}
         >
           <option value="">Select Make</option>
-          {makes.map(m => (
-            <option key={m} value={m}>
-              {m}
+          {makes.map((make) => (
+            <option key={make} value={make}>
+              {make}
             </option>
           ))}
         </select>
 
+        {/* Model dropdown */}
         <select
-          className="p-3 border rounded-lg"
-          value={model}
-          onChange={e => {
-            setModel(e.target.value);
-            setYear("");
-          }}
-          disabled={!make}
+          className="p-2 border rounded"
+          value={selectedModel}
+          onChange={(e) => setSelectedModel(e.target.value)}
+          disabled={!selectedMake}
         >
           <option value="">Select Model</option>
-          {models.map(m => (
-            <option key={m} value={m}>
-              {m}
+          {models.map((model) => (
+            <option key={model} value={model}>
+              {model}
             </option>
           ))}
         </select>
 
+        {/* Year dropdown */}
         <select
-          className="p-3 border rounded-lg"
-          value={year}
-          onChange={e => setYear(e.target.value)}
-          disabled={!model}
+          className="p-2 border rounded"
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(e.target.value)}
+          disabled={!selectedModel}
         >
           <option value="">Select Year</option>
-          {years.map(y => (
-            <option key={y} value={y}>
-              {y}
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
             </option>
           ))}
         </select>
       </div>
 
-      {selectedVehicle && <VehicleTable vehicle={selectedVehicle} />}
+      {/* Vehicle details */}
+      {selectedVehicle && (
+        <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">
+            {selectedVehicle.make} {selectedVehicle.model} ({selectedVehicle.year})
+          </h2>
+          <table className="table-auto w-full border-collapse border">
+            <tbody>
+              {Object.entries(selectedVehicle).map(([key, value]) => (
+                <tr key={key} className="border">
+                  <td className="p-2 font-medium bg-gray-100 border">{key}</td>
+                  <td className="p-2 border">{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
-}
-
-export async function getStaticProps() {
-  const file = path.join(process.cwd(), "public", "vehicles.csv");
-  const csv = fs.readFileSync(file, "utf8");
-  const rows = csvToJson(csv);
-  return { props: { vehicles: rows } };
 }
