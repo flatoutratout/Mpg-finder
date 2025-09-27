@@ -64,9 +64,9 @@ export default function Home() {
   }, [selectedYear, selectedMake, selectedModel, vehicles]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-6">
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-8">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+      <div className="w-full max-w-4xl bg-white rounded-xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
           🚗 MPG Finder
         </h1>
 
@@ -117,7 +117,7 @@ export default function Home() {
         {/* Vehicle details */}
         {selectedVehicle && (
           <div className="bg-gray-50 border rounded-xl shadow-inner p-6">
-            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4 text-center">
               {selectedVehicle.make} {selectedVehicle.model} ({selectedVehicle.year})
             </h2>
 
@@ -125,9 +125,11 @@ export default function Home() {
               {Object.entries(selectedVehicle).map(([key, value]) => (
                 <div
                   key={key}
-                  className="p-3 bg-white rounded-lg shadow-sm border"
+                  className="p-4 bg-white rounded-lg shadow-sm border"
                 >
-                  <p className="text-sm text-gray-500 uppercase">{key}</p>
+                  <p className="text-sm text-gray-500 uppercase tracking-wide">
+                    {key}
+                  </p>
                   <p className="text-lg font-medium text-gray-800">{value}</p>
                 </div>
               ))}
