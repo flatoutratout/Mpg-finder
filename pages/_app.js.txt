@@ -1,30 +1,14 @@
 // pages/_app.js
-import "../styles/globals.css";
-import Script from "next/script";
-import { useEffect } from "react";
+import { useEffect } from 'react';
+import TagManager from 'react-gtm-module';
+import '../styles/globals.css';
 
-export default function MyApp({ Component, pageProps }) {
-
-  // Initialize ads after page renders
+function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.error("Adsense init error:", e);
-    }
+    TagManager.initialize({ gtmId: 'GTM-WWXNLFR8' });
   }, []);
 
-  return (
-    <>
-      {/* Load Google Ads script globally */}
-      <Script
-        strategy="afterInteractive"
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-        crossOrigin="anonymous"
-      />
-
-      {/* Render the page */}
-      <Component {...pageProps} />
-    </>
-  );
+  return <Component {...pageProps} />;
 }
+
+export default MyApp;
