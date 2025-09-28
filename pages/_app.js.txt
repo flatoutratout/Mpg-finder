@@ -1,17 +1,29 @@
 // pages/_app.js
 import "../styles/globals.css";
 import Script from "next/script";
+import { useEffect } from "react";
 
 export default function MyApp({ Component, pageProps }) {
+
+  // Initialize ads after page renders
+  useEffect(() => {
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.error("Adsense init error:", e);
+    }
+  }, []);
+
   return (
     <>
-      {/* Google Ads script loaded after page is interactive */}
+      {/* Load Google Ads script globally */}
       <Script
         strategy="afterInteractive"
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
         crossOrigin="anonymous"
       />
 
+      {/* Render the page */}
       <Component {...pageProps} />
     </>
   );
