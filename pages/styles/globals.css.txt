@@ -1,0 +1,46 @@
+/* Background and base text */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  color: #212529;
+}
+
+/* Headings */
+h1 {
+  color: #343a40;
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* Filters row */
+select,
+input[type="text"] {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: white;
+  margin: 0 5px;
+}
+
+/* DataTable overrides */
+.rdt_Table {
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rdt_TableHeadRow {
+  background: #495057;
+  color: white;
+  font-weight: bold;
+}
+
+.rdt_TableRow:nth-child(even) {
+  background: #f1f3f5;
+}
+
+.rdt_TableRow:hover {
+  background: #e9ecef;
+}
