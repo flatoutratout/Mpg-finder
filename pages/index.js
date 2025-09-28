@@ -1,13 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Papa from "papaparse";
 import DataTable from "react-data-table-component";
 import Image from "next/image";
 
 export default function Home() {
   const [vehicles, setVehicles] = useState([]);
-  const [columns, setColumns] = useState([]);
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [visibleCount, setVisibleCount] = useState(200);
   const BATCH_SIZE = 200;
 
@@ -16,79 +14,43 @@ export default function Home() {
   const [modelFilter, setModelFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
 
-  // Built-in debounce for search
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearch(search), 300);
-    return () => clearTimeout(handler);
-  }, [search]);
-
-  // Load CSV and generate columns
+  // Load CSV
   useEffect(() => {
     async function loadCSV() {
       const res = await fetch("/vehicles.csv");
       const text = await res.text();
       const parsed = Papa.parse(text, { header: true, skipEmptyLines: true }).data;
       setVehicles(parsed);
-
-      if (parsed.length > 0) {
-        const allKeys = Object.keys(parsed[0]);
-        const priority = ["Make", "Model", "Year"];
-        const sortedKeys = [
-          ...priority.filter((k) => allKeys.includes(k)),
-          ...allKeys.filter((k) => !priority.includes(k)).sort(),
-        ];
-
-        const csvColumns = sortedKeys.map((key) => ({
-          name: key,
-          selector: (row) => row[key],
-          cell: (row) => highlightText(row[key], debouncedSearch),
-          sortable: true,
-        }));
-
-        setColumns(csvColumns);
-      }
     }
     loadCSV();
-  }, [debouncedSearch]);
+  }, []);
 
-  // Highlight search matches
-  function highlightText(text, query) {
-    if (!query) return text;
-    const regex = new RegExp(`(${query})`, "gi");
-    const parts = text?.toString().split(regex);
-    return parts.map((part, i) =>
-      regex.test(part) ? <mark key={i} className="bg-yellow-200">{part}</mark> : part
-    );
-  }
-
-  // Memoized filtered data
-  const filteredData = useMemo(() => {
-    return vehicles
-      .filter((v) => (!makeFilter || v["Make"]?.trim() === makeFilter))
-      .filter((v) => (!modelFilter || v["Model"]?.trim() === modelFilter))
-      .filter((v) => (!yearFilter || v["Year"]?.toString() === yearFilter))
-      .filter((v) => {
-        if (!debouncedSearch) return true;
-        const lower = debouncedSearch.toLowerCase();
-        return (
-          v["Make"]?.toLowerCase().includes(lower) ||
-          v["Model"]?.toLowerCase().includes(lower) ||
-          v["Year"]?.toString().includes(lower)
-        );
-      });
-  }, [vehicles, makeFilter, modelFilter, yearFilter, debouncedSearch]);
+  // Filtered dataset
+  const filteredData = vehicles
+    .filter((v) => (!makeFilter || v["Make"] === makeFilter))
+    .filter((v) => (!modelFilter || v["Model"] === modelFilter))
+    .filter((v) => (!yearFilter || v["Year"] === yearFilter))
+    .filter((v) => {
+      if (!search) return true;
+      const lower = search.toLowerCase();
+      return (
+        v["Make"]?.toLowerCase().includes(lower) ||
+        v["Model"]?.toLowerCase().includes(lower) ||
+        v["Year"]?.toString().includes(lower)
+      );
+    });
 
   const visibleData = filteredData.slice(0, visibleCount);
 
-  // Dynamic dropdown options
-  const makes = useMemo(() => [...new Set(vehicles.map((v) => v["Make"]?.trim()))].sort(), [vehicles]);
-  const models = useMemo(() => [...new Set(vehicles.filter((v) => !makeFilter || v["Make"]?.trim() === makeFilter).map((v) => v["Model"]?.trim()))].sort(), [vehicles, makeFilter]);
-  const years = useMemo(() => [...new Set(filteredData.map((v) => v["Year"]))].sort(), [filteredData]);
+  const makes = [...new Set(vehicles.map((v) => v["Make"]))].sort();
+  const models = [...new Set(vehicles.filter((v) => !makeFilter || v["Make"] === makeFilter).map((v) => v["Model"]))].sort();
+  const years = [...new Set(filteredData.map((v) => v["Year"]))].sort();
 
   const handleLoadMore = () => setVisibleCount((prev) => prev + BATCH_SIZE);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-100 via-white to-gray-200">
+
       {/* Header */}
       <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white">
         <div className="flex items-center space-x-4">
@@ -96,6 +58,17 @@ export default function Home() {
           <h1 className="text-4xl font-extrabold text-gray-800">MPG Finder</h1>
         </div>
       </header>
+
+      {/* Intro Content for AdSense */}
+      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
+        <h2 className="text-2xl font-bold mb-4">Welcome to MPG Finder</h2>
+        <p className="mb-4">
+          Compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles. Use the filters to find cars that match your needs and see how they perform in city and highway conditions.
+        </p>
+        <p className="mb-4">
+          This tool is perfect for eco-conscious drivers, automotive enthusiasts, or anyone looking to make informed decisions about fuel efficiency and environmental impact.
+        </p>
+      </section>
 
       {/* Filters + Search */}
       <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
@@ -108,7 +81,7 @@ export default function Home() {
             value={makeFilter}
             onChange={(e) => {
               setMakeFilter(e.target.value);
-              setModelFilter("");
+              setModelFilter(""); 
             }}
             className="p-2 border border-gray-300 rounded-lg shadow-sm"
           >
@@ -154,7 +127,7 @@ export default function Home() {
           </select>
         </div>
 
-        {/* Typeahead Search */}
+        {/* Search */}
         <div className="flex flex-col flex-1 min-w-[200px]">
           <label htmlFor="searchInput" className="text-gray-700 mb-1">Search</label>
           <input
@@ -173,23 +146,21 @@ export default function Home() {
       {/* Data Table */}
       <main className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
         <DataTable
-          columns={columns}
-          data={visibleData}
+          columns={vehicles.length > 0 ? Object.keys(vehicles[0]).map(key => ({ name: key, selector: row => row[key], sortable: true })) : []}
+          data={vehicles.slice(0, visibleCount)}
           pagination={false}
           highlightOnHover
           striped
           responsive
           dense={false}
         />
-
         <p className="text-sm text-gray-500 mt-2">
-          Showing {visibleData.length} of {filteredData.length} matching vehicles
+          Showing {Math.min(visibleCount, vehicles.length)} of {vehicles.length} matching vehicles
         </p>
-
-        {visibleData.length < filteredData.length && (
+        {visibleCount < vehicles.length && (
           <div className="flex justify-center mt-4">
             <button
-              onClick={handleLoadMore}
+              onClick={() => setVisibleCount(prev => prev + BATCH_SIZE)}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
             >
               Load More
@@ -197,6 +168,18 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {/* Closing Content for AdSense */}
+      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
+        <h3 className="text-xl font-bold mb-2">Why Fuel Efficiency Matters</h3>
+        <p>
+          Choosing vehicles with higher MPG reduces fuel costs and environmental impact. MPG Finder helps you make informed decisions by comparing multiple models quickly and easily.
+        </p>
+        <p className="mt-2">
+          Explore different makes and models to find the best combination of performance, comfort, and efficiency for your lifestyle.
+        </p>
+      </section>
+
     </div>
   );
 }
