@@ -1,31 +1,20 @@
-import Script from 'next/script';
+// pages/_app.js
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { pageview } from '../lib/gtm';
 
-function MyApp({ Component, pageProps }) {
-  return (
-    <>
-      {/* Google Tag Manager */}
-      <Script id="gtm-script" strategy="afterInteractive">
-        {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-WWXNLFR8');`}
-      </Script>
+export default function App({ Component, pageProps }) {
+  const router = useRouter();
 
-      {/* Google Tag Manager (noscript) */}
-      <noscript>
-        <iframe
-          src="https://www.googletagmanager.com/ns.html?id=GTM-WWXNLFR8"
-          height="0"
-          width="0"
-          style={{ display: 'none', visibility: 'hidden' }}
-        ></iframe>
-      </noscript>
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      pageview(url);
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
 
-      {/* Your app components */}
-      <Component {...pageProps} />
-    </>
-  );
+  return <Component {...pageProps} />;
 }
-
-export default MyApp;
