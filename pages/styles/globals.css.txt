@@ -1,13 +1,11 @@
 /* styles/globals.css */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-html,
-body {
+html, body {
   font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f9fafb; /* Soft gray background */
-  color: #1f2937; /* Dark gray text */
+  transition: background-color 0.3s, color 0.3s;
 }
 
 a {
@@ -17,3 +15,5 @@ a {
 * {
   box-sizing: border-box;
 }
+
+/* Dark mode colors (Tailwind already handles this if using dark: prefix) */
