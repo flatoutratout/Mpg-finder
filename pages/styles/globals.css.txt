@@ -1,46 +1,19 @@
-/* Background and base text */
+/* styles/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+html,
 body {
+  font-family: 'Inter', sans-serif;
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  color: #212529;
+  padding: 0;
+  background-color: #f9fafb; /* Soft gray background */
+  color: #1f2937; /* Dark gray text */
 }
 
-/* Headings */
-h1 {
-  color: #343a40;
-  text-align: center;
-  margin: 20px 0;
+a {
+  text-decoration: none;
 }
 
-/* Filters row */
-select,
-input[type="text"] {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background: white;
-  margin: 0 5px;
-}
-
-/* DataTable overrides */
-.rdt_Table {
-  border-radius: 10px;
-  overflow: hidden;
-  background: white;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.rdt_TableHeadRow {
-  background: #495057;
-  color: white;
-  font-weight: bold;
-}
-
-.rdt_TableRow:nth-child(even) {
-  background: #f1f3f5;
-}
-
-.rdt_TableRow:hover {
-  background: #e9ecef;
+* {
+  box-sizing: border-box;
 }
