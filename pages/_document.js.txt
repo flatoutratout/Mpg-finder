@@ -5,13 +5,18 @@ class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
-        <Head />
+        <Head>
+          {/* Google AdSense verification */}
+          <meta
+            name="google-adsense-account"
+            content="ca-pub-2806617957660523"
+          />
+        </Head>
         <body>
           {/* Google Tag Manager (noscript) */}
           <noscript>
             <iframe
-              src="https://www.googletagmanager.com/ns.html?id=GTM-
-GTM-WWXNLFR8"
+              src="https://www.googletagmanager.com/ns.html?id=GTM-WWXNLFR8"
               height="0"
               width="0"
               style={{ display: 'none', visibility: 'hidden' }}
