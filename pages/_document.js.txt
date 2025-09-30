@@ -6,6 +6,9 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+<script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
           {/* Google AdSense verification */}
           <meta
             name="google-adsense-account"
@@ -26,6 +29,9 @@ class MyDocument extends Document {
         <body className="bg-gray-50 text-gray-800">
           <Main />
           <NextScript />
+<amp-auto-ads type="adsense"
+        data-ad-client="ca-pub-2806617957660523">
+</amp-auto-ads>
         </body>
       </Html>
     );
@@ -33,3 +39,4 @@ class MyDocument extends Document {
 }
 
 export default MyDocument;
+
