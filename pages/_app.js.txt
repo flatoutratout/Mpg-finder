@@ -1,38 +1,19 @@
 // pages/_app.js
-import { useEffect } from 'react';
-import Script from 'next/script';
 import '../styles/globals.css';
+import Layout from '../components/Layout';
+import { motion } from 'framer-motion';
 
-function MyApp({ Component, pageProps }) {
-  useEffect(() => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'gtm.js' });
-  }, []);
-
+export default function MyApp({ Component, pageProps }) {
   return (
-    <>
-      {/* Google Tag Manager */}
-      <Script
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function(w,d,s,l,i){
-              w[l]=w[l]||[];w[l].push({'gtm.start':
-              new Date().getTime(),event:'gtm.js'});
-              var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-              j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-              f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-
-GTM-WWXNLFR8');
-          `,
-        }}
-      />
-      {/* End Google Tag Manager */}
-
-      <Component {...pageProps} />
-    </>
+    <Layout>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Component {...pageProps} />
+      </motion.div>
+    </Layout>
   );
 }
-
-export default MyApp;
