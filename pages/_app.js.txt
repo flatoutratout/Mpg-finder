@@ -1,11 +1,24 @@
 // pages/_app.js
 import '../styles/globals.css';
 import Layout from '../components/Layout';
+import SEO from '../components/SEO';
+import Script from 'next/script';
 import { motion } from 'framer-motion';
 
 export default function MyApp({ Component, pageProps }) {
   return (
     <Layout>
+      {/* Default SEO */}
+      <SEO />
+
+      {/* Google AdSense script */}
+      <Script
+        strategy="afterInteractive"
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2806617957660523"
+        crossOrigin="anonymous"
+      />
+
+      {/* Page transitions */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
