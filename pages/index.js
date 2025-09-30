@@ -25,7 +25,7 @@ export default function Home() {
     loadCSV();
   }, []);
 
-  // Columns for DataTable (Step 1)
+  // Columns for DataTable
   const columns = [
     { name: "Make", selector: row => row.make, sortable: true },
     { name: "Model", selector: row => row.model, sortable: true },
@@ -45,24 +45,24 @@ export default function Home() {
 
   // Filtered dataset
   const filteredData = vehicles
-    .filter((v) => (!makeFilter || v["make"] === makeFilter))
-    .filter((v) => (!modelFilter || v["model"] === modelFilter))
-    .filter((v) => (!yearFilter || v["year"] === yearFilter))
+    .filter((v) => (!makeFilter || v.make === makeFilter))
+    .filter((v) => (!modelFilter || v.model === modelFilter))
+    .filter((v) => (!yearFilter || v.year === yearFilter))
     .filter((v) => {
       if (!search) return true;
       const lower = search.toLowerCase();
       return (
-        v["make"]?.toLowerCase().includes(lower) ||
-        v["model"]?.toLowerCase().includes(lower) ||
-        v["year"]?.toString().includes(lower)
+        v.make?.toLowerCase().includes(lower) ||
+        v.model?.toLowerCase().includes(lower) ||
+        v.year?.toString().includes(lower)
       );
     });
 
   const visibleData = filteredData.slice(0, visibleCount);
 
-  const makes = [...new Set(vehicles.map((v) => v["make"]))].sort();
-  const models = [...new Set(vehicles.filter((v) => !makeFilter || v["make"] === makeFilter).map((v) => v["model"]))].sort();
-  const years = [...new Set(filteredData.map((v) => v["year"]))].sort();
+  const makes = [...new Set(vehicles.map((v) => v.make))].sort();
+  const models = [...new Set(vehicles.filter((v) => !makeFilter || v.make === makeFilter).map((v) => v.model))].sort();
+  const years = [...new Set(filteredData.map((v) => v.year))].sort();
 
   const handleLoadMore = () => setVisibleCount((prev) => prev + BATCH_SIZE);
 
@@ -161,11 +161,11 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Data Table (Step 2) */}
+      {/* Data Table */}
       <main className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
         <DataTable
           columns={columns}
-          data={vehicles.slice(0, visibleCount)}
+          data={visibleData}
           pagination={false}
           highlightOnHover
           striped
@@ -173,9 +173,9 @@ export default function Home() {
           dense={false}
         />
         <p className="text-sm text-gray-500 mt-2">
-          Showing {Math.min(visibleCount, vehicles.length)} of {vehicles.length} matching vehicles
+          Showing {Math.min(visibleCount, filteredData.length)} of {filteredData.length} matching vehicles
         </p>
-        {visibleCount < vehicles.length && (
+        {visibleCount < filteredData.length && (
           <div className="flex justify-center mt-4">
             <button
               onClick={() => setVisibleCount(prev => prev + BATCH_SIZE)}
