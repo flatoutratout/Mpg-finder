@@ -6,8 +6,8 @@ import Image from "next/image";
 export default function Home() {
   const [vehicles, setVehicles] = useState([]);
   const [search, setSearch] = useState("");
-  const [visibleCount, setVisibleCount] = useState(200);
-  const BATCH_SIZE = 200;
+  const [visibleCount, setVisibleCount] = useState(10);
+  const BATCH_SIZE = 10;
 
   // Filters
   const [makeFilter, setMakeFilter] = useState("");
