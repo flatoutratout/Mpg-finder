@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 export default function Layout({ children }) {
   const [darkMode, setDarkMode] = useState(false);
 
-  // Persist dark mode in localStorage
   useEffect(() => {
     const stored = localStorage.getItem('darkMode') === 'true';
     setDarkMode(stored);
@@ -51,7 +50,7 @@ export default function Layout({ children }) {
         </div>
       </footer>
 
-      {/* Floating AdSense Ad */}
+      {/* Floating AdSense */}
       <div className="fixed bottom-8 right-8 z-50">
         <ins className="adsbygoogle"
           style={{ display: 'block', width: '300px', height: '250px' }}
