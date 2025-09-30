@@ -17,19 +17,13 @@ class MyDocument extends Document {
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2806617957660523"
             crossOrigin="anonymous"
           ></script>
+          {/* Google Fonts */}
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+            rel="stylesheet"
+          />
         </Head>
-        <body>
-          {/* Google Tag Manager (noscript) */}
-          <noscript>
-            <iframe
-              src="https://www.googletagmanager.com/ns.html?id=GTM-WWXNLFR8"
-              height="0"
-              width="0"
-              style={{ display: 'none', visibility: 'hidden' }}
-            ></iframe>
-          </noscript>
-          {/* End Google Tag Manager (noscript) */}
-
+        <body className="bg-gray-50 text-gray-800">
           <Main />
           <NextScript />
         </body>
