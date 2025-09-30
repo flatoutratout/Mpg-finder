@@ -25,26 +25,42 @@ export default function Home() {
     loadCSV();
   }, []);
 
+  // Columns for DataTable (Step 1)
+  const columns = [
+    { name: "Make", selector: row => row.make, sortable: true },
+    { name: "Model", selector: row => row.model, sortable: true },
+    { name: "Year", selector: row => row.year, sortable: true },
+    { name: "Transmission", selector: row => row.trany, sortable: true },
+    { name: "Cylinders", selector: row => row.cylinders, sortable: true },
+    { name: "Displ (L)", selector: row => row.displ, sortable: true },
+    { name: "Drive", selector: row => row.drive, sortable: true },
+    { name: "City MPG", selector: row => row.city08, sortable: true },
+    { name: "Highway MPG", selector: row => row.highway08, sortable: true },
+    { name: "Combined MPG", selector: row => row.comb08, sortable: true },
+    { name: "CO₂ (g/mi)", selector: row => row.co2, sortable: true },
+    { name: "Fuel Type", selector: row => row.fuelType1, sortable: true },
+  ];
+
   // Filtered dataset
   const filteredData = vehicles
-    .filter((v) => (!makeFilter || v["Make"] === makeFilter))
-    .filter((v) => (!modelFilter || v["Model"] === modelFilter))
-    .filter((v) => (!yearFilter || v["Year"] === yearFilter))
+    .filter((v) => (!makeFilter || v["make"] === makeFilter))
+    .filter((v) => (!modelFilter || v["model"] === modelFilter))
+    .filter((v) => (!yearFilter || v["year"] === yearFilter))
     .filter((v) => {
       if (!search) return true;
       const lower = search.toLowerCase();
       return (
-        v["Make"]?.toLowerCase().includes(lower) ||
-        v["Model"]?.toLowerCase().includes(lower) ||
-        v["Year"]?.toString().includes(lower)
+        v["make"]?.toLowerCase().includes(lower) ||
+        v["model"]?.toLowerCase().includes(lower) ||
+        v["year"]?.toString().includes(lower)
       );
     });
 
   const visibleData = filteredData.slice(0, visibleCount);
 
-  const makes = [...new Set(vehicles.map((v) => v["Make"]))].sort();
-  const models = [...new Set(vehicles.filter((v) => !makeFilter || v["Make"] === makeFilter).map((v) => v["Model"]))].sort();
-  const years = [...new Set(filteredData.map((v) => v["Year"]))].sort();
+  const makes = [...new Set(vehicles.map((v) => v["make"]))].sort();
+  const models = [...new Set(vehicles.filter((v) => !makeFilter || v["make"] === makeFilter).map((v) => v["model"]))].sort();
+  const years = [...new Set(filteredData.map((v) => v["year"]))].sort();
 
   const handleLoadMore = () => setVisibleCount((prev) => prev + BATCH_SIZE);
 
@@ -143,10 +159,10 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Data Table */}
+      {/* Data Table (Step 2) */}
       <main className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
         <DataTable
-          columns={vehicles.length > 0 ? Object.keys(vehicles[0]).map(key => ({ name: key, selector: row => row[key], sortable: true })) : []}
+          columns={columns}
           data={vehicles.slice(0, visibleCount)}
           pagination={false}
           highlightOnHover
