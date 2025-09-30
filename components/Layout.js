@@ -1,31 +1,32 @@
-// components/VehicleTable.js
-export default function VehicleTable({ vehicle }) {
-  if (!vehicle) return null;
-
+// components/Layout.js
+export default function Layout({ children }) {
   return (
-    <div className="mt-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        {vehicle.Make} {vehicle.Model} ({vehicle.Year})
-      </h2>
-      <div className="overflow-x-auto rounded-xl shadow-md border border-gray-200">
-        <table className="min-w-full bg-white">
-          <tbody>
-            {Object.entries(vehicle).map(([key, value], index) => (
-              <tr
-                key={key}
-                className={`${
-                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                } hover:bg-indigo-50 transition`}
-              >
-                <td className="px-4 py-3 font-semibold text-gray-700 capitalize border-r border-gray-200 w-1/3">
-                  {key.replace(/_/g, " ")}
-                </td>
-                <td className="px-4 py-3 text-gray-600">{value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <div className="min-h-screen flex flex-col font-inter bg-gray-50 text-gray-800">
+      {/* Header */}
+      <header className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+          <h1 className="text-2xl font-bold text-blue-600">MyWebsite</h1>
+          <nav className="space-x-6">
+            <a href="#" className="text-gray-700 hover:text-blue-600">Home</a>
+            <a href="#" className="text-gray-700 hover:text-blue-600">About</a>
+            <a href="#" className="text-gray-700 hover:text-blue-600">Contact</a>
+          </nav>
+        </div>
+      </header>
+
+      {/* Main content */}
+      <main className="flex-1">{children}</main>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-gray-200 py-12 mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p>© {new Date().getFullYear()} MyWebsite. All rights reserved.</p>
+          <div className="mt-4 space-x-4">
+            <a href="#" className="hover:text-white">Privacy Policy</a>
+            <a href="#" className="hover:text-white">Terms of Service</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
