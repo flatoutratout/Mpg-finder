@@ -15,5 +15,3 @@ a {
 * {
   box-sizing: border-box;
 }
-
-/* Dark mode colors (Tailwind already handles this if using dark: prefix) */
