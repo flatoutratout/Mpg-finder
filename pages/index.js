@@ -39,6 +39,8 @@ export default function Home() {
     { name: "Combined MPG", selector: row => row.comb08, sortable: true },
     { name: "CO₂ (g/mi)", selector: row => row.co2, sortable: true },
     { name: "Fuel Type", selector: row => row.fuelType1, sortable: true },
+    { name: "Turbocharger", selector: row => row.tCharger ? "Yes" : "No", sortable: true },
+    { name: "Supercharger", selector: row => row.sCharger ? "Yes" : "No", sortable: true },
   ];
 
   // Filtered dataset
