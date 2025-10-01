@@ -1,3 +1,5 @@
+/* styles/dark.css */
+
 /* Dark mode overrides */
 
 /* Background & text */
@@ -26,7 +28,7 @@ html.dark footer {
   color: #f3f4f6;
 }
 
-/* Optional: links in footer */
+/* Links in footer */
 html.dark footer a {
   color: #d1d5db;
 }
