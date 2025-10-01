@@ -1,53 +1,49 @@
-/* styles/dark.css */
+/* Dark mode for MPG Finder, matches your blue accents */
 
-/* Dark mode overrides */
-
-/* Background & text */
 html.dark body {
-  background-color: #1f2937; /* dark gray */
-  color: #f3f4f6;           /* light text */
+  background-color: #1f2937;
+  color: #f3f4f6;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-/* Header */
 html.dark header {
   background-color: #111827;
   color: #f3f4f6;
 }
 
-/* Links in header */
 html.dark header a {
-  color: #d1d5db; /* light gray */
+  color: #cbd5e1;
 }
 html.dark header a:hover {
-  color: #3b82f6; /* blue hover */
+  color: #3b82f6;
 }
 
-/* Footer */
 html.dark footer {
   background-color: #111827;
-  color: #f3f4f6;
+  color: #cbd5e1;
 }
-
-/* Links in footer */
 html.dark footer a {
-  color: #d1d5db;
+  color: #cbd5e1;
 }
 html.dark footer a:hover {
-  color: #ffffff;
+  color: #3b82f6;
 }
 
-/* Main content background */
 html.dark main {
-  background-color: #1e293b; /* slightly lighter dark */
+  background-color: #1e293b;
   color: #f3f4f6;
 }
 
-/* Buttons */
 html.dark button {
-  background-color: #374151;
+  background-color: #1f2937;
   color: #f3f4f6;
   border-color: #4b5563;
 }
 html.dark button:hover {
-  background-color: #4b5563;
+  background-color: #3b4252;
+}
+
+/* Optional: floating ad background fix */
+html.dark div[style*="adsbygoogle"] {
+  background-color: #1f2937;
 }
