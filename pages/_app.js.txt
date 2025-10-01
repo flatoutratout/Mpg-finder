@@ -1,7 +1,7 @@
 // pages/_app.js
 
 import '../styles/globals.css';
-import '../styles/dark.css'; // Import dark mode CSS
+import '../styles/dark.css'; // Load dark mode CSS
 
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
