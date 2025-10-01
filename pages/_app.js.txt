@@ -1,5 +1,9 @@
 // pages/_app.js
+
+// Load global styles and dark mode styles
 import '../styles/globals.css';
+import '../styles/dark.css';
+
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
 import Script from 'next/script';
@@ -11,7 +15,7 @@ export default function MyApp({ Component, pageProps }) {
       {/* Default SEO */}
       <SEO />
 
-      {/* Google AdSense script */}
+      {/* Google AdSense */}
       <Script
         strategy="afterInteractive"
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2806617957660523"
