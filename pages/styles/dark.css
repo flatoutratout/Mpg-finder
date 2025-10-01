@@ -1,20 +1,51 @@
 /* Dark mode overrides */
-html.dark {
-  --bg-main: #1f2937;       /* dark gray background */
-  --text-main: #f3f4f6;     /* light text */
-  --header-bg: #111827;
-  --footer-bg: #111827;
+
+/* Background & text */
+html.dark body {
+  background-color: #1f2937; /* dark gray */
+  color: #f3f4f6;           /* light text */
 }
 
-body {
-  background-color: var(--bg-main, #f9fafb);
-  color: var(--text-main, #111827);
+/* Header */
+html.dark header {
+  background-color: #111827;
+  color: #f3f4f6;
 }
 
-header {
-  background-color: var(--header-bg, #ffffff);
+/* Links in header */
+html.dark header a {
+  color: #d1d5db; /* light gray */
+}
+html.dark header a:hover {
+  color: #3b82f6; /* blue hover */
 }
 
-footer {
-  background-color: var(--footer-bg, #1f2937);
+/* Footer */
+html.dark footer {
+  background-color: #111827;
+  color: #f3f4f6;
+}
+
+/* Optional: links in footer */
+html.dark footer a {
+  color: #d1d5db;
+}
+html.dark footer a:hover {
+  color: #ffffff;
+}
+
+/* Main content background */
+html.dark main {
+  background-color: #1e293b; /* slightly lighter dark */
+  color: #f3f4f6;
+}
+
+/* Buttons */
+html.dark button {
+  background-color: #374151;
+  color: #f3f4f6;
+  border-color: #4b5563;
+}
+html.dark button:hover {
+  background-color: #4b5563;
 }
