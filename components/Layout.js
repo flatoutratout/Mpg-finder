@@ -5,13 +5,14 @@ import Image from "next/image";
 export default function Layout({ children }) {
   const [darkMode, setDarkMode] = useState(false);
 
-  // Load saved preference
+  // Load saved preference on mount
   useEffect(() => {
     const stored = localStorage.getItem("darkMode") === "true";
     setDarkMode(stored);
     document.documentElement.classList.toggle("dark", stored);
   }, []);
 
+  // Toggle handler
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
@@ -21,11 +22,11 @@ export default function Layout({ children }) {
 
   return (
     <div className="min-h-screen flex flex-col font-inter bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-
+      
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-16 justify-between">
-
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-16">
+          
           {/* Logo + Title */}
           <div className="flex items-center space-x-4">
             <Image src="/logo.png" alt="MPG Finder Logo" width={50} height={50} />
@@ -34,7 +35,7 @@ export default function Layout({ children }) {
             </h1>
           </div>
 
-          {/* Nav */}
+          {/* Nav Links */}
           <nav className="flex-1 flex justify-center space-x-6">
             <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400">Home</a>
             <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400">About</a>
@@ -52,7 +53,7 @@ export default function Layout({ children }) {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 p-6">{children}</main>
+      <main className="flex-1">{children}</main>
 
       {/* Footer */}
       <footer className="py-12 mt-20 text-center bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 transition-colors duration-300">
