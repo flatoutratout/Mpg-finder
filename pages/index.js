@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Papa from "papaparse";
 import DataTable from "react-data-table-component";
-import Image from "next/image";
 
 export default function Home() {
   const [vehicles, setVehicles] = useState([]);
@@ -39,8 +38,8 @@ export default function Home() {
     { name: "Combined MPG", selector: row => row.comb08, sortable: true },
     { name: "CO₂ (g/mi)", selector: row => row.co2, sortable: true },
     { name: "Fuel Type", selector: row => row.fuelType1, sortable: true },
-    { name: "Turbocharger", selector: row => row.tCharger ? "Yes" : "No", sortable: true },
-    { name: "Supercharger", selector: row => row.sCharger ? "Yes" : "No", sortable: true },
+    { name: "Turbocharger", selector: row => (row.tCharger ? "Yes" : "No"), sortable: true },
+    { name: "Supercharger", selector: row => (row.sCharger ? "Yes" : "No"), sortable: true },
   ];
 
   // Filtered dataset
@@ -67,18 +66,10 @@ export default function Home() {
   const handleLoadMore = () => setVisibleCount((prev) => prev + BATCH_SIZE);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-100 via-white to-gray-200">
+    <div className="min-h-screen bg-gradient-to-r from-gray-100 via-white to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white">
-        <div className="flex items-center space-x-4">
-          <Image src="/logo.png" alt="MPG Finder Logo" width={350} height={350} />
-          <h1 className="text-4xl font-extrabold text-gray-800">MPG Finder</h1>
-        </div>
-      </header>
-
-      {/* Intro Content for AdSense */}
-      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
+      {/* Intro Content */}
+      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white dark:bg-gray-800 shadow-xl rounded-xl">
         <h2 className="text-2xl font-bold mb-4">Welcome to MPG Finder</h2>
         <p className="mb-4">
           Compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles. Use the filters to find cars that match your needs and see how they perform in city and highway conditions.
@@ -92,16 +83,16 @@ export default function Home() {
       <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
         {/* Make Filter */}
         <div className="flex flex-col">
-          <label htmlFor="makeFilter" className="text-gray-700 mb-1">Make</label>
+          <label htmlFor="makeFilter" className="text-gray-700 dark:text-gray-300 mb-1">Make</label>
           <select
             id="makeFilter"
             name="makeFilter"
             value={makeFilter}
             onChange={(e) => {
               setMakeFilter(e.target.value);
-              setModelFilter(""); 
+              setModelFilter("");
             }}
-            className="p-2 border border-gray-300 rounded-lg shadow-sm"
+            className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
             <option value="">All Makes</option>
             {makes.map((make, idx) => (
@@ -112,14 +103,14 @@ export default function Home() {
 
         {/* Model Filter */}
         <div className="flex flex-col">
-          <label htmlFor="modelFilter" className="text-gray-700 mb-1">Model</label>
+          <label htmlFor="modelFilter" className="text-gray-700 dark:text-gray-300 mb-1">Model</label>
           <select
             id="modelFilter"
             name="modelFilter"
             value={modelFilter}
             onChange={(e) => setModelFilter(e.target.value)}
             disabled={models.length === 0}
-            className="p-2 border border-gray-300 rounded-lg shadow-sm"
+            className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
             <option value="">All Models</option>
             {models.map((model, idx) => (
@@ -130,13 +121,13 @@ export default function Home() {
 
         {/* Year Filter */}
         <div className="flex flex-col">
-          <label htmlFor="yearFilter" className="text-gray-700 mb-1">Year</label>
+          <label htmlFor="yearFilter" className="text-gray-700 dark:text-gray-300 mb-1">Year</label>
           <select
             id="yearFilter"
             name="yearFilter"
             value={yearFilter}
             onChange={(e) => setYearFilter(e.target.value)}
-            className="p-2 border border-gray-300 rounded-lg shadow-sm"
+            className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
             <option value="">All Years</option>
             {years.map((year, idx) => (
@@ -147,7 +138,7 @@ export default function Home() {
 
         {/* Search */}
         <div className="flex flex-col flex-1 min-w-[200px]">
-          <label htmlFor="searchInput" className="text-gray-700 mb-1">Search</label>
+          <label htmlFor="searchInput" className="text-gray-700 dark:text-gray-300 mb-1">Search</label>
           <input
             type="text"
             id="searchInput"
@@ -155,14 +146,14 @@ export default function Home() {
             placeholder="Type make, model, or year..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="p-2 border border-gray-300 rounded-lg shadow-sm"
+            className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             autoComplete="off"
           />
         </div>
       </div>
 
       {/* Data Table */}
-      <main className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
+      <main className="max-w-7xl mx-auto mt-6 p-6 bg-white dark:bg-gray-800 shadow-xl rounded-xl">
         <DataTable
           columns={columns}
           data={visibleData}
@@ -172,13 +163,13 @@ export default function Home() {
           responsive
           dense={false}
         />
-        <p className="text-sm text-gray-500 mt-2">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
           Showing {Math.min(visibleCount, filteredData.length)} of {filteredData.length} matching vehicles
         </p>
         {visibleCount < filteredData.length && (
           <div className="flex justify-center mt-4">
             <button
-              onClick={() => setVisibleCount(prev => prev + BATCH_SIZE)}
+              onClick={handleLoadMore}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
             >
               Load More
@@ -187,8 +178,8 @@ export default function Home() {
         )}
       </main>
 
-      {/* Closing Content for AdSense */}
-      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
+      {/* Closing Content */}
+      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white dark:bg-gray-800 shadow-xl rounded-xl">
         <h3 className="text-xl font-bold mb-2">Why Fuel Efficiency Matters</h3>
         <p>
           Choosing vehicles with higher MPG reduces fuel costs and environmental impact. MPG Finder helps you make informed decisions by comparing multiple models quickly and easily.
@@ -197,7 +188,6 @@ export default function Home() {
           Explore different makes and models to find the best combination of performance, comfort, and efficiency for your lifestyle.
         </p>
       </section>
-
     </div>
   );
 }
