@@ -68,7 +68,7 @@ export default function Home() {
       {/* Intro Section */}
       <section className="max-w-7xl mx-auto mt-6 p-6 bg-blue-300 shadow-xl rounded-xl">
         <div className="flex items-center space-x-4">
-          <Image src="/logo.png" alt="MPG Finder Logo" width={60} height={60} />
+          <Image src="/logo.png" alt="MPG Finder Logo" width={180} height={180} />
           <h1 className="text-3xl font-bold text-blue-900">Welcome to MPG Finder</h1>
         </div>
         <p className="mt-4 text-blue-900">
