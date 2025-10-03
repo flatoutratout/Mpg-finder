@@ -14,7 +14,6 @@ export default function Home() {
   const [modelFilter, setModelFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
 
-  // Load CSV
   useEffect(() => {
     async function loadCSV() {
       const res = await fetch("/vehicles.csv");
@@ -57,7 +56,6 @@ export default function Home() {
     });
 
   const visibleData = filteredData.slice(0, visibleCount);
-
   const makes = [...new Set(vehicles.map((v) => v.make))].sort();
   const models = [...new Set(vehicles.filter((v) => !makeFilter || v.make === makeFilter).map((v) => v.model))].sort();
   const years = [...new Set(filteredData.map((v) => v.year))].sort();
@@ -65,13 +63,13 @@ export default function Home() {
   const handleLoadMore = () => setVisibleCount(prev => prev + BATCH_SIZE);
 
   return (
-    <div className="min-h-screen bg-blue-200 text-blue-900">
+    <div className="min-h-screen">
 
       {/* Intro Section */}
       <section className="max-w-7xl mx-auto mt-6 p-6 bg-blue-300 shadow-xl rounded-xl">
         <div className="flex items-center space-x-4">
-          <Image src="/logo.png" alt="MPG Finder Logo" width={180} height={180} />
-          <h1 className="text-3xl font-bold">Welcome to MPG Finder</h1>
+          <Image src="/logo.png" alt="MPG Finder Logo" width={60} height={60} />
+          <h1 className="text-3xl font-bold text-blue-900">Welcome to MPG Finder</h1>
         </div>
         <p className="mt-4 text-blue-900">
           Compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles.
@@ -80,7 +78,6 @@ export default function Home() {
 
       {/* Filters + Search */}
       <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
-        {/* Make Filter */}
         <div className="flex flex-col">
           <label htmlFor="makeFilter" className="text-blue-900 mb-1">Make</label>
           <select
@@ -94,7 +91,6 @@ export default function Home() {
           </select>
         </div>
 
-        {/* Model Filter */}
         <div className="flex flex-col">
           <label htmlFor="modelFilter" className="text-blue-900 mb-1">Model</label>
           <select
@@ -109,7 +105,6 @@ export default function Home() {
           </select>
         </div>
 
-        {/* Year Filter */}
         <div className="flex flex-col">
           <label htmlFor="yearFilter" className="text-blue-900 mb-1">Year</label>
           <select
@@ -123,7 +118,6 @@ export default function Home() {
           </select>
         </div>
 
-        {/* Search */}
         <div className="flex flex-col flex-1 min-w-[200px]">
           <label htmlFor="searchInput" className="text-blue-900 mb-1">Search</label>
           <input
