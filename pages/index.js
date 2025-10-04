@@ -65,10 +65,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200">
       <Head>
-        <title>MPG Finder – Compare Fuel Economy & CO₂ Emissions</title>
-        <meta name="description" content="Find and compare vehicle MPG, CO₂ emissions, and performance data. Filter by make, model, and year." />
+        <title>MPG Finder</title>
+        <meta
+          name="description"
+          content="Find and compare vehicle MPG, CO₂ emissions, and performance data. Filter by make, model, and year."
+        />
       </Head>
 
+      {/* Header */}
       <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white/90">
         <div className="flex items-center space-x-4">
           <Image src="/logo.png" alt="MPG Finder Logo" width={200} height={200} />
@@ -76,14 +80,16 @@ export default function Home() {
         </div>
       </header>
 
+      {/* Intro */}
       <section className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
         <h2 className="text-2xl font-bold mb-4">Welcome to MPG Finder</h2>
         <p>
-          Search and compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles.
-          Use filters to narrow results by make, model, and year.
+          Search and compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles. 
+          Use our filters to narrow results by make, model, and year.
         </p>
       </section>
 
+      {/* Filters */}
       <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
         <div>
           <label htmlFor="makeFilter" className="block mb-1">Make</label>
@@ -97,6 +103,7 @@ export default function Home() {
             {makes.map((make, idx) => <option key={idx} value={make}>{make}</option>)}
           </select>
         </div>
+
         <div>
           <label htmlFor="modelFilter" className="block mb-1">Model</label>
           <select
@@ -110,6 +117,7 @@ export default function Home() {
             {models.map((model, idx) => <option key={idx} value={model}>{model}</option>)}
           </select>
         </div>
+
         <div>
           <label htmlFor="yearFilter" className="block mb-1">Year</label>
           <select
@@ -122,6 +130,7 @@ export default function Home() {
             {years.map((year, idx) => <option key={idx} value={year}>{year}</option>)}
           </select>
         </div>
+
         <div className="flex-1 min-w-[200px]">
           <label htmlFor="searchInput" className="block mb-1">Search</label>
           <input
@@ -135,6 +144,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Data Table */}
       <main className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
         <DataTable
           columns={columns}
