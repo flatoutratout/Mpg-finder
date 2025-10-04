@@ -61,17 +61,20 @@ export default function Home() {
   const years = [...new Set(filteredData.map(v => v.year))].sort();
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#4169E1" }}>
+    <div
+      className="min-h-screen"
+      style={{ background: "linear-gradient(to bottom, #e0f0ff, #a3c4f7)" }}
+    >
       {/* Header */}
-      <header className="flex items-center justify-between p-6 shadow-md bg-white">
+      <header className="flex items-center justify-between p-6 shadow-md bg-white/95 backdrop-blur-sm">
         <div className="flex items-center space-x-4">
-          <Image src="/logo.png" alt="MPG Finder Logo" width={240} height={100} />
+          <Image src="/logo.png" alt="MPG Finder Logo" width={120} height={50} />
           <h1 className="text-2xl font-bold text-blue-900">MPG Finder</h1>
         </div>
       </header>
 
       {/* Filters */}
-      <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-end justify-center p-4 bg-white rounded-lg shadow">
+      <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-end justify-center p-4 bg-white/90 rounded-lg shadow">
         <div className="flex flex-col">
           <label>Make</label>
           <select
@@ -122,7 +125,7 @@ export default function Home() {
       </div>
 
       {/* DataTable */}
-      <div className="max-w-7xl mx-auto mt-6 p-4 rounded-lg shadow bg-white">
+      <div className="max-w-7xl mx-auto mt-6 p-4 rounded-lg shadow bg-white/90">
         <DataTable
           columns={columns}
           data={visibleData}
@@ -138,7 +141,7 @@ export default function Home() {
           <div className="flex justify-center mt-4">
             <button
               onClick={() => setVisibleCount(prev => prev + BATCH_SIZE)}
-              className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
             >
               Load More
             </button>
@@ -147,7 +150,10 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="py-8 text-center text-white mt-12" style={{ backgroundColor: "#4169E1" }}>
+      <footer
+        className="py-8 text-center text-white mt-12"
+        style={{ backgroundColor: "#1e3a8a" }}
+      >
         <p>© {new Date().getFullYear()} MPG Finder. All rights reserved.</p>
       </footer>
     </div>
