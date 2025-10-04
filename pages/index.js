@@ -80,7 +80,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200">
+    <>
       <Head>
         <title>MPG Finder – Compare Fuel Economy & CO₂ Emissions</title>
         <meta
@@ -94,116 +94,118 @@ export default function Home() {
         />
       </Head>
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white/90">
-        <div className="flex items-center space-x-4">
-          <Image src="/logo.png" alt="MPG Finder Logo" width={200} height={200} />
-          <h1 className="text-4xl font-extrabold text-gray-800">MPG Finder</h1>
-        </div>
-      </header>
-
-      {/* Intro */}
-      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
-        <h2 className="text-2xl font-bold mb-4">Welcome to MPG Finder</h2>
-        <p>
-          Search and compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles. 
-          Use our filters to narrow results by make, model, and year.
-        </p>
-      </section>
-
-      {/* Filters */}
-      <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
-        {/* Make */}
-        <div>
-          <label htmlFor="makeFilter" className="block mb-1">Make</label>
-          <select
-            id="makeFilter"
-            value={makeFilter}
-            onChange={(e) => {
-              setMakeFilter(e.target.value);
-              setModelFilter("");
-            }}
-            className="p-2 border border-gray-300 rounded-lg"
-          >
-            <option value="">All Makes</option>
-            {makes.map((make, idx) => (
-              <option key={`make-${idx}`} value={make}>{make}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Model */}
-        <div>
-          <label htmlFor="modelFilter" className="block mb-1">Model</label>
-          <select
-            id="modelFilter"
-            value={modelFilter}
-            onChange={(e) => setModelFilter(e.target.value)}
-            disabled={models.length === 0}
-            className="p-2 border border-gray-300 rounded-lg"
-          >
-            <option value="">All Models</option>
-            {models.map((model, idx) => (
-              <option key={`model-${idx}`} value={model}>{model}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Year */}
-        <div>
-          <label htmlFor="yearFilter" className="block mb-1">Year</label>
-          <select
-            id="yearFilter"
-            value={yearFilter}
-            onChange={(e) => setYearFilter(e.target.value)}
-            className="p-2 border border-gray-300 rounded-lg"
-          >
-            <option value="">All Years</option>
-            {years.map((year, idx) => (
-              <option key={`year-${idx}`} value={year}>{year}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Search */}
-        <div className="flex-1 min-w-[200px]">
-          <label htmlFor="searchInput" className="block mb-1">Search</label>
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Type make, model, or year..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="p-2 border border-gray-300 rounded-lg w-full"
-          />
-        </div>
-      </div>
-
-      {/* Data Table */}
-      <main className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
-        <DataTable
-          columns={columns}
-          data={visibleData}
-          pagination={false}
-          highlightOnHover
-          striped
-          responsive
-        />
-        <p className="text-sm text-gray-500 mt-2">
-          Showing {Math.min(visibleCount, filteredData.length)} of {filteredData.length} vehicles
-        </p>
-        {visibleCount < filteredData.length && (
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={handleLoadMore}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
-            >
-              Load More
-            </button>
+      <div className="w-full">
+        {/* Header */}
+        <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white/90">
+          <div className="flex items-center space-x-4">
+            <Image src="/logo.png" alt="MPG Finder Logo" width={200} height={200} />
+            <h1 className="text-4xl font-extrabold text-gray-800">MPG Finder</h1>
           </div>
-        )}
-      </main>
-    </div>
+        </header>
+
+        {/* Intro */}
+        <section className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
+          <h2 className="text-2xl font-bold mb-4">Welcome to MPG Finder</h2>
+          <p>
+            Search and compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles. 
+            Use our filters to narrow results by make, model, and year.
+          </p>
+        </section>
+
+        {/* Filters */}
+        <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
+          {/* Make */}
+          <div>
+            <label htmlFor="makeFilter" className="block mb-1">Make</label>
+            <select
+              id="makeFilter"
+              value={makeFilter}
+              onChange={(e) => {
+                setMakeFilter(e.target.value);
+                setModelFilter("");
+              }}
+              className="p-2 border border-gray-300 rounded-lg"
+            >
+              <option value="">All Makes</option>
+              {makes.map((make, idx) => (
+                <option key={`make-${idx}`} value={make}>{make}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Model */}
+          <div>
+            <label htmlFor="modelFilter" className="block mb-1">Model</label>
+            <select
+              id="modelFilter"
+              value={modelFilter}
+              onChange={(e) => setModelFilter(e.target.value)}
+              disabled={models.length === 0}
+              className="p-2 border border-gray-300 rounded-lg"
+            >
+              <option value="">All Models</option>
+              {models.map((model, idx) => (
+                <option key={`model-${idx}`} value={model}>{model}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Year */}
+          <div>
+            <label htmlFor="yearFilter" className="block mb-1">Year</label>
+            <select
+              id="yearFilter"
+              value={yearFilter}
+              onChange={(e) => setYearFilter(e.target.value)}
+              className="p-2 border border-gray-300 rounded-lg"
+            >
+              <option value="">All Years</option>
+              {years.map((year, idx) => (
+                <option key={`year-${idx}`} value={year}>{year}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Search */}
+          <div className="flex-1 min-w-[200px]">
+            <label htmlFor="searchInput" className="block mb-1">Search</label>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Type make, model, or year..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="p-2 border border-gray-300 rounded-lg w-full"
+            />
+          </div>
+        </div>
+
+        {/* Data Table */}
+        <main className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
+          <DataTable
+            columns={columns}
+            data={visibleData}
+            pagination={false}
+            highlightOnHover
+            striped
+            responsive
+          />
+          <p className="text-sm text-gray-500 mt-2">
+            Showing {Math.min(visibleCount, filteredData.length)} of {filteredData.length} vehicles
+          </p>
+          {visibleCount < filteredData.length && (
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={handleLoadMore}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+              >
+                Load More
+              </button>
+            </div>
+          )}
+        </main>
+      </div>
+    </>
   );
 }
 
