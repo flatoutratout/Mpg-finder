@@ -1,26 +1,34 @@
 /* styles/globals.css */
 
-/* Reset some basics */
+/* Tailwind base, components, utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Full page background */
 html, body, #__next {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-/* Full page background */
+/* Force a light royal blue background for the entire page */
 body {
-  background-color: #89CFF0; /* Light royal blue */
+  background-color: #4169E1; /* Royal Blue */
   font-family: 'Inter', sans-serif;
 }
 
-/* Optional: make the Layout divs transparent so the body background shows */
+/* Ensure Layout's outer div does not override the body background */
 .min-h-screen {
   background: transparent !important;
 }
 
-/* Keep sections/cards readable with their own backgrounds */
+/* Sections and cards keep their own backgrounds */
 section, main, .card {
   background-color: #ffffff; /* white for cards/sections */
 }
 
-/* Tailwind text color defaults can remain */
+/* Optional: text colors for readability */
+h1, h2, h3, p, label {
+  color: #1a202c; /* dark text for contrast */
+}
