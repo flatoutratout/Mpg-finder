@@ -1,4 +1,3 @@
-// components/Layout.js
 "use client";
 import { useState, useEffect } from "react";
 
@@ -19,20 +18,15 @@ export default function Layout({ children }) {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col font-inter"
-      style={{ backgroundColor: "#4169E1" }} // Light royal blue background
-    >
+    <div className="min-h-screen flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-50 flex justify-between items-center px-6 py-3">
         <h1 className="text-2xl font-bold text-blue-900">MPG Finder</h1>
-
         <nav className="space-x-4">
           <a href="#" className="text-gray-700 hover:text-blue-900">Home</a>
           <a href="#" className="text-gray-700 hover:text-blue-900">About</a>
           <a href="#" className="text-gray-700 hover:text-blue-900">Contact</a>
         </nav>
-
         <button
           onClick={toggleDarkMode}
           className="ml-4 px-3 py-1 border rounded text-sm text-white bg-blue-800 hover:bg-blue-700 transition"
