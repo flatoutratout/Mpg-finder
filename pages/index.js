@@ -64,7 +64,7 @@ export default function Home() {
 
       {/* Logo & Welcome */}
       <section className="max-w-7xl w-full bg-white rounded-xl shadow-lg p-6 flex items-center space-x-4">
-        <Image src="/logo.png" alt="MPG Finder Logo" width={60} height={60} />
+        <Image src="/logo.png" alt="MPG Finder Logo" width={180} height={180} />
         <div>
           <h1 className="text-3xl font-bold text-blue-900">Welcome to MPG Finder</h1>
           <p className="mt-2 text-blue-900">Compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles.</p>
