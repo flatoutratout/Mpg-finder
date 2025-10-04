@@ -68,7 +68,7 @@ export default function Home() {
       {/* Header */}
       <header className="flex items-center justify-between p-6 shadow-md bg-white/95 backdrop-blur-sm">
         <div className="flex items-center space-x-4">
-          <Image src="/logo.png" alt="MPG Finder Logo" width={120} height={50} />
+          <Image src="/logo.png" alt="MPG Finder Logo" width={240} height={240} />
           <h1 className="text-2xl font-bold text-blue-900">MPG Finder</h1>
         </div>
       </header>
