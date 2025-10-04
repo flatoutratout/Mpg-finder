@@ -61,7 +61,6 @@ export default function Home() {
 
   const handleLoadMore = () => setVisibleCount((prev) => prev + BATCH_SIZE);
 
-  // JSON-LD ItemList (list of cars)
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -92,19 +91,18 @@ export default function Home() {
         />
       </Head>
 
-      {/* 🔵 Blue gradient background wrapper */}
+      {/* Blue gradient wrapper */}
       <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200">
-        
         {/* Header */}
-        <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white">
+        <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white/80 backdrop-blur">
           <div className="flex items-center space-x-4">
-            <Image src="/logo.png" alt="MPG Finder Logo" width={200} height={200} />
+            <Image src="/logo.png" alt="MPG Finder Logo" width={160} height={160} />
             <h1 className="text-4xl font-extrabold text-gray-800">MPG Finder</h1>
           </div>
         </header>
 
         {/* Intro */}
-        <section className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
+        <section className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
           <h2 className="text-2xl font-bold mb-4">Welcome to MPG Finder</h2>
           <p>
             Search and compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles. 
@@ -113,9 +111,9 @@ export default function Home() {
         </section>
 
         {/* Filters */}
-        <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
+        <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4 bg-white/90 shadow rounded-xl">
           <div>
-            <label htmlFor="makeFilter" className="block mb-1">Make</label>
+            <label htmlFor="makeFilter" className="block mb-1 font-semibold">Make</label>
             <select
               id="makeFilter"
               value={makeFilter}
@@ -133,7 +131,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label htmlFor="modelFilter" className="block mb-1">Model</label>
+            <label htmlFor="modelFilter" className="block mb-1 font-semibold">Model</label>
             <select
               id="modelFilter"
               value={modelFilter}
@@ -149,7 +147,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label htmlFor="yearFilter" className="block mb-1">Year</label>
+            <label htmlFor="yearFilter" className="block mb-1 font-semibold">Year</label>
             <select
               id="yearFilter"
               value={yearFilter}
@@ -164,7 +162,7 @@ export default function Home() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label htmlFor="searchInput" className="block mb-1">Search</label>
+            <label htmlFor="searchInput" className="block mb-1 font-semibold">Search</label>
             <input
               type="text"
               id="searchInput"
@@ -177,7 +175,7 @@ export default function Home() {
         </div>
 
         {/* Data Table */}
-        <main className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
+        <main className="max-w-7xl mx-auto mt-6 p-6 bg-white/95 shadow-xl rounded-xl">
           <DataTable
             columns={columns}
             data={visibleData}
@@ -186,7 +184,7 @@ export default function Home() {
             striped
             responsive
           />
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-gray-700 mt-2">
             Showing {Math.min(visibleCount, filteredData.length)} of {filteredData.length} vehicles
           </p>
           {visibleCount < filteredData.length && (
@@ -205,7 +203,7 @@ export default function Home() {
   );
 }
 
-// Helper to generate car slugs for ItemList
+// Helper
 function makeSlug(v) {
   return `${v.make?.toLowerCase().replace(/\s+/g,'-')}-${v.model?.toLowerCase().replace(/\s+/g,'-')}-${v.year}`;
 }
