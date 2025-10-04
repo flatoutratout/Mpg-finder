@@ -60,24 +60,22 @@ export default function Home() {
   const models = [...new Set(vehicles.filter((v) => !makeFilter || v.make === makeFilter).map((v) => v.model))].sort();
   const years = [...new Set(filteredData.map((v) => v.year))].sort();
 
-  const handleLoadMore = () => setVisibleCount(prev => prev + BATCH_SIZE);
-
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col items-center w-full">
 
-      {/* Intro Section */}
-      <section className="max-w-7xl mx-auto mt-6 p-6 bg-blue-300 shadow-xl rounded-xl">
-        <div className="flex items-center space-x-4">
-          <Image src="/logo.png" alt="MPG Finder Logo" width={180} height={180} />
+      {/* Logo and Intro Section */}
+      <section className="max-w-7xl w-full mt-6 p-6 bg-white rounded-xl shadow-lg flex items-center space-x-4">
+        <Image src="/logo.png" alt="MPG Finder Logo" width={180} height={180} />
+        <div>
           <h1 className="text-3xl font-bold text-blue-900">Welcome to MPG Finder</h1>
+          <p className="mt-2 text-blue-900">
+            Compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles.
+          </p>
         </div>
-        <p className="mt-4 text-blue-900">
-          Compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles.
-        </p>
       </section>
 
       {/* Filters + Search */}
-      <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
+      <div className="max-w-7xl w-full mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
         <div className="flex flex-col">
           <label htmlFor="makeFilter" className="text-blue-900 mb-1">Make</label>
           <select
@@ -132,7 +130,7 @@ export default function Home() {
       </div>
 
       {/* Data Table */}
-      <main className="max-w-7xl mx-auto mt-6 p-6 bg-blue-300 shadow-xl rounded-xl">
+      <main className="max-w-7xl w-full mt-6 p-6 bg-white rounded-xl shadow-lg">
         <DataTable
           columns={columns}
           data={visibleData}
@@ -140,7 +138,6 @@ export default function Home() {
           highlightOnHover
           striped
           responsive
-          dense={false}
         />
         <p className="text-sm text-blue-900 mt-2">
           Showing {Math.min(visibleCount, filteredData.length)} of {filteredData.length} matching vehicles
@@ -148,7 +145,7 @@ export default function Home() {
         {visibleCount < filteredData.length && (
           <div className="flex justify-center mt-4">
             <button
-              onClick={handleLoadMore}
+              onClick={() => setVisibleCount(prev => prev + BATCH_SIZE)}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
             >
               Load More
@@ -158,9 +155,11 @@ export default function Home() {
       </main>
 
       {/* Footer Section */}
-      <section className="max-w-7xl mx-auto mt-6 p-6 bg-blue-300 shadow-xl rounded-xl text-blue-900">
+      <section className="max-w-7xl w-full mt-6 p-6 bg-white rounded-xl shadow-lg text-blue-900">
         <h3 className="text-xl font-bold mb-2">Why Fuel Efficiency Matters</h3>
-        <p>Choosing vehicles with higher MPG reduces fuel costs and environmental impact.</p>
+        <p>
+          Choosing vehicles with higher MPG reduces fuel costs and environmental impact.
+        </p>
       </section>
 
     </div>
