@@ -1,38 +1,51 @@
 // components/Layout.js
 "use client";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function Layout({ children }) {
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("darkMode") === "true";
+    setDarkMode(stored);
+    if (stored) document.documentElement.classList.add("dark");
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    document.documentElement.classList.toggle("dark", newMode);
+    localStorage.setItem("darkMode", newMode);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col font-inter bg-blue-200 text-gray-900 transition-colors duration-300">
-
+    <div
+      className="min-h-screen flex flex-col font-inter"
+      style={{ backgroundColor: "#4169E1" }} // Light royal blue background
+    >
       {/* Header */}
-      <header className="bg-blue-300 shadow-md sticky top-0 z-50 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-16 justify-between">
+      <header className="bg-white shadow-md sticky top-0 z-50 flex justify-between items-center px-6 py-3">
+        <h1 className="text-2xl font-bold text-blue-900">MPG Finder</h1>
 
-          {/* Logo + Title */}
-          <div className="flex items-center space-x-4">
-            <Image src="/logo.png" alt="MPG Finder Logo" width={50} height={50} />
-            <h1 className="text-2xl font-bold text-blue-900">MPG Finder</h1>
-          </div>
+        <nav className="space-x-4">
+          <a href="#" className="text-gray-700 hover:text-blue-900">Home</a>
+          <a href="#" className="text-gray-700 hover:text-blue-900">About</a>
+          <a href="#" className="text-gray-700 hover:text-blue-900">Contact</a>
+        </nav>
 
-          {/* Navigation */}
-          <nav className="flex-1 flex justify-center space-x-6">
-            <a href="#" className="text-blue-900 hover:text-blue-700">Home</a>
-            <a href="#" className="text-blue-900 hover:text-blue-700">About</a>
-            <a href="#" className="text-blue-900 hover:text-blue-700">Contact</a>
-          </nav>
-
-        </div>
+        <button
+          onClick={toggleDarkMode}
+          className="ml-4 px-3 py-1 border rounded text-sm text-white bg-blue-800 hover:bg-blue-700 transition"
+        >
+          {darkMode ? "Light Mode" : "Dark Mode"}
+        </button>
       </header>
 
       {/* Main content */}
-      <main className="flex-1 p-6">
-        {children}
-      </main>
+      <main className="flex-1 px-6 py-4">{children}</main>
 
       {/* Footer */}
-      <footer className="py-12 mt-20 text-center bg-blue-300 text-blue-900 transition-colors duration-300">
+      <footer className="py-8 text-center text-white">
         <p>© {new Date().getFullYear()} MPG Finder. All rights reserved.</p>
       </footer>
     </div>
