@@ -113,7 +113,6 @@ export default function Home() {
 
       {/* Filters */}
       <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
-        {/* Make */}
         <div>
           <label htmlFor="makeFilter" className="block mb-1">Make</label>
           <select
@@ -132,7 +131,6 @@ export default function Home() {
           </select>
         </div>
 
-        {/* Model */}
         <div>
           <label htmlFor="modelFilter" className="block mb-1">Model</label>
           <select
@@ -149,7 +147,6 @@ export default function Home() {
           </select>
         </div>
 
-        {/* Year */}
         <div>
           <label htmlFor="yearFilter" className="block mb-1">Year</label>
           <select
@@ -165,7 +162,6 @@ export default function Home() {
           </select>
         </div>
 
-        {/* Search */}
         <div className="flex-1 min-w-[200px]">
           <label htmlFor="searchInput" className="block mb-1">Search</label>
           <input
@@ -209,5 +205,4 @@ export default function Home() {
 
 // Helper for slugs
 function makeSlug(v) {
-  return `${v.make?.toLowerCase().replace(/\s+/g,'-')}-${v.model?.toLowerCase().replace(/\s+/g,'-')}-${v.year}`;
-}
+  return `${v.make?.toLowerCase().
