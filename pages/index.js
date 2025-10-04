@@ -64,7 +64,7 @@ export default function Home() {
 
       {/* Logo & Welcome */}
       <section className="max-w-7xl w-full bg-white rounded-xl shadow-lg p-6 flex items-center space-x-4">
-        <Image src="/logo.png" alt="MPG Finder Logo" width={180} height={180} />
+        <Image src="/logo.png" alt="MPG Finder Logo" width={60} height={60} />
         <div>
           <h1 className="text-3xl font-bold text-blue-900">Welcome to MPG Finder</h1>
           <p className="mt-2 text-blue-900">Compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles.</p>
@@ -127,4 +127,32 @@ export default function Home() {
         <DataTable
           columns={columns}
           data={visibleData}
-          pagination={false
+          pagination={false}
+          highlightOnHover
+          striped
+          responsive
+        />
+        <p className="text-sm text-blue-900 mt-2">
+          Showing {Math.min(visibleCount, filteredData.length)} of {filteredData.length} matching vehicles
+        </p>
+        {visibleCount < filteredData.length && (
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => setVisibleCount(prev => prev + BATCH_SIZE)}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+            >
+              Load More
+            </button>
+          </div>
+        )}
+      </main>
+
+      {/* Footer Section */}
+      <section className="max-w-7xl w-full bg-white rounded-xl shadow-lg p-6 text-blue-900">
+        <h3 className="text-xl font-bold mb-2">Why Fuel Efficiency Matters</h3>
+        <p>Choosing vehicles with higher MPG reduces fuel costs and environmental impact.</p>
+      </section>
+
+    </div>
+  );
+}
