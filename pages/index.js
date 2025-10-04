@@ -24,7 +24,6 @@ export default function Home() {
     loadCSV();
   }, []);
 
-  // Full columns restored
   const columns = [
     { name: "Make", selector: row => row.make, sortable: true },
     { name: "Model", selector: row => row.model, sortable: true },
@@ -42,7 +41,6 @@ export default function Home() {
     { name: "Supercharger", selector: row => row.sCharger ? "Yes" : "No", sortable: true },
   ];
 
-  // Filtered dataset
   const filteredData = vehicles
     .filter(v => !makeFilter || v.make === makeFilter)
     .filter(v => !modelFilter || v.model === modelFilter)
@@ -65,15 +63,15 @@ export default function Home() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#4169E1" }}>
       {/* Header */}
-      <header className="flex items-center justify-between p-6 bg-white shadow-md sticky top-0 z-50">
+      <header className="flex items-center justify-between p-6 shadow-md bg-white">
         <div className="flex items-center space-x-4">
-          <Image src="/logo.png" alt="MPG Finder Logo" width={120} height={50} />
+          <Image src="/logo.png" alt="MPG Finder Logo" width={240} height={100} />
           <h1 className="text-2xl font-bold text-blue-900">MPG Finder</h1>
         </div>
       </header>
 
       {/* Filters */}
-      <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-end justify-center p-4">
+      <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-end justify-center p-4 bg-white rounded-lg shadow">
         <div className="flex flex-col">
           <label>Make</label>
           <select
@@ -124,7 +122,7 @@ export default function Home() {
       </div>
 
       {/* DataTable */}
-      <div className="max-w-7xl mx-auto mt-6 p-4 bg-white rounded-lg shadow">
+      <div className="max-w-7xl mx-auto mt-6 p-4 rounded-lg shadow bg-white">
         <DataTable
           columns={columns}
           data={visibleData}
@@ -149,7 +147,7 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="py-8 text-center text-white mt-12">
+      <footer className="py-8 text-center text-white mt-12" style={{ backgroundColor: "#4169E1" }}>
         <p>© {new Date().getFullYear()} MPG Finder. All rights reserved.</p>
       </footer>
     </div>
