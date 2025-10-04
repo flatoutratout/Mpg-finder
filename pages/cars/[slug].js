@@ -1,155 +1,95 @@
-import { useState, useEffect } from "react";
-import Papa from "papaparse";
-import DataTable from "react-data-table-component";
-import Image from "next/image";
+import fs from 'fs';
+import path from 'path';
+import Ads from '../../components/Ads';
 
-export default function Home() {
-  const [vehicles, setVehicles] = useState([]);
-  const [search, setSearch] = useState("");
-  const [visibleCount, setVisibleCount] = useState(10);
-  const BATCH_SIZE = 10;
+export default function VehiclePage({ vehicle }) {
+  if (!vehicle) return <div className="p-6">Not found</div>;
 
-  const [makeFilter, setMakeFilter] = useState("");
-  const [modelFilter, setModelFilter] = useState("");
-  const [yearFilter, setYearFilter] = useState("");
-
-  // Load CSV
-  useEffect(() => {
-    async function loadCSV() {
-      const res = await fetch("/vehicles.csv");
-      const text = await res.text();
-      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true }).data;
-      setVehicles(parsed);
-    }
-    loadCSV();
-  }, []);
-
-  const columns = [
-    { name: "Make", selector: row => row.make, sortable: true },
-    { name: "Model", selector: row => row.model, sortable: true },
-    { name: "Year", selector: row => row.year, sortable: true },
-    { name: "Transmission", selector: row => row.trany, sortable: true },
-    { name: "Cylinders", selector: row => row.cylinders, sortable: true },
-    { name: "Displ (L)", selector: row => row.displ, sortable: true },
-    { name: "Drive", selector: row => row.drive, sortable: true },
-    { name: "City MPG", selector: row => row.city08, sortable: true },
-    { name: "Highway MPG", selector: row => row.highway08, sortable: true },
-    { name: "Combined MPG", selector: row => row.comb08, sortable: true },
-    { name: "CO₂ (g/mi)", selector: row => row.co2, sortable: true },
-    { name: "Fuel Type", selector: row => row.fuelType1, sortable: true },
-    { name: "Turbocharger", selector: row => row.tCharger ? "Yes" : "No", sortable: true },
-    { name: "Supercharger", selector: row => row.sCharger ? "Yes" : "No", sortable: true },
-  ];
-
-  const filteredData = vehicles
-    .filter(v => !makeFilter || v.make === makeFilter)
-    .filter(v => !modelFilter || v.model === modelFilter)
-    .filter(v => !yearFilter || v.year === yearFilter)
-    .filter(v => {
-      if (!search) return true;
-      const lower = search.toLowerCase();
-      return (
-        v.make?.toLowerCase().includes(lower) ||
-        v.model?.toLowerCase().includes(lower) ||
-        v.year?.toString().includes(lower)
-      );
-    });
-
-  const visibleData = filteredData.slice(0, visibleCount);
-  const makes = [...new Set(vehicles.map(v => v.make))].sort();
-  const models = [...new Set(vehicles.filter(v => !makeFilter || v.make === makeFilter).map(v => v.model))].sort();
-  const years = [...new Set(filteredData.map(v => v.year))].sort();
+  const title = `${vehicle.make} ${vehicle.model} (${vehicle.year}) – MPG & specs`;
+  const description = `MPG, CO2 and range for the ${vehicle.year} ${vehicle.make} ${vehicle.model}.`;
+  const url = '';
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": `${vehicle.make} ${vehicle.model}`,
+    "description": description,
+    "brand": vehicle.make,
+    "category": "Vehicle",
+    "additionalProperty": [
+      { "@type": "PropertyValue", "name": "MPG", "value": vehicle.mpg || 'N/A' },
+      { "@type": "PropertyValue", "name": "CO2_g_km", "value": vehicle.co2 || 'N/A' },
+      { "@type": "PropertyValue", "name": "Range_miles", "value": vehicle.range_miles || 'N/A' }
+    ]
+  };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#4169E1" }}>
-      {/* Header */}
-      <header className="flex items-center justify-between p-6 shadow-md bg-white">
-        <div className="flex items-center space-x-4">
-          <Image src="/logo.png" alt="MPG Finder Logo" width={120} height={50} />
-          <h1 className="text-2xl font-bold text-blue-900">MPG Finder</h1>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gray-50">
+      {/* Meta / SEO can be added here if needed */}
 
-      {/* Filters */}
-      <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-end justify-center p-4 bg-white rounded-lg shadow">
-        <div className="flex flex-col">
-          <label>Make</label>
-          <select
-            value={makeFilter}
-            onChange={e => { setMakeFilter(e.target.value); setModelFilter(""); }}
-            className="p-2 border rounded"
+      <div className="max-w-3xl mx-auto p-6">
+        <h1 className="text-2xl font-bold">{vehicle.make} {vehicle.model} ({vehicle.year})</h1>
+        <dl className="mt-4 space-y-2">
+          <dt className="font-medium">Fuel</dt><dd>{vehicle.fuel}</dd>
+          <dt className="font-medium">MPG</dt><dd>{vehicle.mpg || '—'}</dd>
+          <dt className="font-medium">CO₂ g/km</dt><dd>{vehicle.co2 || '—'}</dd>
+          <dt className="font-medium">Range (miles)</dt><dd>{vehicle.range_miles || '—'}</dd>
+        </dl>
+
+        <div className="mt-6 p-4 border rounded bg-gray-50">
+          <h3 className="font-semibold mb-2">Quick saving/insurance estimate</h3>
+          <p className="text-sm mb-3">Compare insurance quotes for this model. (Example affiliate link)</p>
+          <a
+            href={`https://example-affiliate.com/quote?make=${encodeURIComponent(vehicle.make)}&model=${encodeURIComponent(vehicle.model)}&year=${vehicle.year}`}
+            target="_blank" rel="noopener noreferrer"
+            className="inline-block px-4 py-2 bg-yellow-500 text-black rounded"
           >
-            <option value="">All Makes</option>
-            {makes.map((m,i) => <option key={i} value={m}>{m}</option>)}
-          </select>
+            Get Quotes (affiliate)
+          </a>
         </div>
 
-        <div className="flex flex-col">
-          <label>Model</label>
-          <select
-            value={modelFilter}
-            onChange={e => setModelFilter(e.target.value)}
-            disabled={models.length === 0}
-            className="p-2 border rounded"
-          >
-            <option value="">All Models</option>
-            {models.map((m,i) => <option key={i} value={m}>{m}</option>)}
-          </select>
-        </div>
-
-        <div className="flex flex-col">
-          <label>Year</label>
-          <select
-            value={yearFilter}
-            onChange={e => setYearFilter(e.target.value)}
-            className="p-2 border rounded"
-          >
-            <option value="">All Years</option>
-            {years.map((y,i) => <option key={i} value={y}>{y}</option>)}
-          </select>
-        </div>
-
-        <div className="flex flex-col flex-1 min-w-[200px]">
-          <label>Search</label>
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Type make, model, or year..."
-            className="p-2 border rounded"
-          />
+        <div className="mt-6">
+          <Ads slot="inline-article" />
         </div>
       </div>
-
-      {/* DataTable */}
-      <div className="max-w-7xl mx-auto mt-6 p-4 rounded-lg shadow bg-white">
-        <DataTable
-          columns={columns}
-          data={visibleData}
-          pagination={false}
-          highlightOnHover
-          striped
-          responsive
-        />
-        <p className="text-sm text-gray-700 mt-2">
-          Showing {Math.min(visibleCount, filteredData.length)} of {filteredData.length} matching vehicles
-        </p>
-        {visibleCount < filteredData.length && (
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={() => setVisibleCount(prev => prev + BATCH_SIZE)}
-              className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-            >
-              Load More
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Footer */}
-      <footer className="py-8 text-center text-white mt-12" style={{ backgroundColor: "#4169E1" }}>
-        <p>© {new Date().getFullYear()} MPG Finder. All rights reserved.</p>
-      </footer>
     </div>
   );
+}
+
+export async function getStaticPaths() {
+  return { paths: [], fallback: 'blocking' };
+}
+
+export async function getStaticProps({ params }) {
+  const slug = params.slug;
+  const file = path.join(process.cwd(), 'data', 'mpg-sample.csv');
+  const csv = fs.readFileSync(file, 'utf8');
+  const rows = csvToJson(csv);
+  const vehicle = rows.find(v => makeSlug(v) === slug) || null;
+
+  if (!vehicle) {
+    return { notFound: true, revalidate: 10 };
+  }
+
+  return { props: { vehicle }, revalidate: 60 * 60 * 24 };
+}
+
+// Helper functions
+function csvToJson(csv) {
+  const lines = csv.split('\n').filter(Boolean);
+  const headers = lines.shift().split(',');
+  return lines.map(l => {
+    const cols = l.split(',');
+    const o = {};
+    headers.forEach((h,i) => {
+      const val = cols[i];
+      o[h] = val === '' ? null : (isNumeric(val) ? Number(val) : val);
+    });
+    return o;
+  });
+}
+
+function isNumeric(n) { return !isNaN(n) && n !== ''; }
+
+function makeSlug(v) { 
+  return `${v.make.toLowerCase().replace(/\s+/g,'-')}-${v.model.toLowerCase().replace(/\s+/g,'-')}-${v.year}`; 
 }
