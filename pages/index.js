@@ -65,7 +65,7 @@ export default function Home() {
   const handleLoadMore = () => setVisibleCount(prev => prev + BATCH_SIZE);
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200">
       <Head>
         <title>MPG Finder</title>
         <meta
@@ -75,7 +75,7 @@ export default function Home() {
       </Head>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white/90">
         <div className="flex items-center space-x-4">
           <Image src="/logo.png" alt="MPG Finder Logo" width={200} height={200} />
           <h1 className="text-4xl font-extrabold text-gray-800">MPG Finder</h1>
@@ -83,7 +83,7 @@ export default function Home() {
       </header>
 
       {/* Intro */}
-      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white/80 shadow-xl rounded-xl backdrop-blur-sm">
+      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
         <h2 className="text-2xl font-bold mb-4">Welcome to MPG Finder</h2>
         <p>
           Search and compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles. 
@@ -147,7 +147,7 @@ export default function Home() {
       </div>
 
       {/* Data Table */}
-      <main className="max-w-7xl mx-auto mt-6 p-6 bg-white/80 shadow-xl rounded-xl backdrop-blur-sm">
+      <main className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
         <DataTable
           columns={columns}
           data={visibleData}
