@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import Layout from '../../components/Layout';
 import Ads from '../../components/Ads';
 
 export default function VehiclePage({ vehicle }) {
