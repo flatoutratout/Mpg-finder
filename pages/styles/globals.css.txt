@@ -1,17 +1,26 @@
 /* styles/globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-html, body {
-  font-family: 'Inter', sans-serif;
+/* Reset some basics */
+html, body, #__next {
+  height: 100%;
   margin: 0;
   padding: 0;
-  transition: background-color 0.3s, color 0.3s;
 }
 
-a {
-  text-decoration: none;
+/* Full page background */
+body {
+  background-color: #89CFF0; /* Light royal blue */
+  font-family: 'Inter', sans-serif;
 }
 
-* {
-  box-sizing: border-box;
+/* Optional: make the Layout divs transparent so the body background shows */
+.min-h-screen {
+  background: transparent !important;
 }
+
+/* Keep sections/cards readable with their own backgrounds */
+section, main, .card {
+  background-color: #ffffff; /* white for cards/sections */
+}
+
+/* Tailwind text color defaults can remain */
