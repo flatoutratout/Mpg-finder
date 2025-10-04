@@ -1,3 +1,4 @@
+// pages/_document.js
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 
 class MyDocument extends Document {
@@ -5,20 +6,33 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <script async custom-element="amp-auto-ads"
-            src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
-          </script>
-          <meta name="google-adsense-account" content="ca-pub-2806617957660523" />
-          <script async
+          <script
+            async
+            custom-element="amp-auto-ads"
+            src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"
+          ></script>
+          <meta
+            name="google-adsense-account"
+            content="ca-pub-2806617957660523"
+          />
+          <script
+            async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2806617957660523"
-            crossOrigin="anonymous">
-          </script>
-          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+            crossOrigin="anonymous"
+          ></script>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+            rel="stylesheet"
+          />
         </Head>
-        <body className="bg-blue-50 text-gray-800">
+        {/* ✅ NO bg-gray-50 on body */}
+        <body className="text-gray-800">
           <Main />
           <NextScript />
-          <amp-auto-ads type="adsense" data-ad-client="ca-pub-2806617957660523"></amp-auto-ads>
+          <amp-auto-ads
+            type="adsense"
+            data-ad-client="ca-pub-2806617957660523"
+          ></amp-auto-ads>
         </body>
       </Html>
     );
