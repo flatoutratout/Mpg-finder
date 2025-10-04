@@ -63,7 +63,6 @@ export default function Home() {
 
   const handleLoadMore = () => setVisibleCount((prev) => prev + BATCH_SIZE);
 
-  // JSON-LD ItemList (list of cars)
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -94,8 +93,9 @@ export default function Home() {
         />
       </Head>
 
-      {/* Subtle pale blue gradient background */}
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200">
+      {/* Full page subtle blue gradient */}
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 pb-12">
+
         {/* Header */}
         <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white">
           <div className="flex items-center space-x-4">
