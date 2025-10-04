@@ -17,4 +17,6 @@ html, body, #__next {
 }
 
 /* Solid white helper if you really need it */
-.bg-solid-white { background-color: #ffffff !important; }
+.bg-solid-white { 
+  background-color: #ffffff !important; 
+}
