@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Papa from "papaparse";
 import DataTable from "react-data-table-component";
+import Image from "next/image";
 
 export default function Home() {
   const [vehicles, setVehicles] = useState([]);
@@ -26,9 +27,17 @@ export default function Home() {
     { name: "Make", selector: row => row.make, sortable: true },
     { name: "Model", selector: row => row.model, sortable: true },
     { name: "Year", selector: row => row.year, sortable: true },
+    { name: "Transmission", selector: row => row.trany, sortable: true },
+    { name: "Cylinders", selector: row => row.cylinders, sortable: true },
+    { name: "Displ (L)", selector: row => row.displ, sortable: true },
+    { name: "Drive", selector: row => row.drive, sortable: true },
     { name: "City MPG", selector: row => row.city08, sortable: true },
     { name: "Highway MPG", selector: row => row.highway08, sortable: true },
     { name: "Combined MPG", selector: row => row.comb08, sortable: true },
+    { name: "CO₂ (g/mi)", selector: row => row.co2, sortable: true },
+    { name: "Fuel Type", selector: row => row.fuelType1, sortable: true },
+    { name: "Turbocharger", selector: row => row.tCharger ? "Yes" : "No", sortable: true },
+    { name: "Supercharger", selector: row => row.sCharger ? "Yes" : "No", sortable: true },
   ];
 
   const filteredData = vehicles
@@ -51,56 +60,99 @@ export default function Home() {
   const years = [...new Set(filteredData.map((v) => v.year))].sort();
 
   return (
-    <div className="max-w-7xl mx-auto mt-6 space-y-6">
-      {/* Filters */}
-      <div className="flex flex-wrap gap-4 justify-center items-end">
+    <div className="min-h-screen flex flex-col items-center w-full space-y-6">
+
+      {/* Logo & Welcome */}
+      <section className="max-w-7xl w-full bg-white rounded-xl shadow-lg p-6 flex items-center space-x-4">
+        <Image src="/logo.png" alt="MPG Finder Logo" width={180} height={180} />
+        <div>
+          <h1 className="text-3xl font-bold text-blue-900">Welcome to MPG Finder</h1>
+          <p className="mt-2 text-blue-900">Compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles.</p>
+        </div>
+      </section>
+
+      {/* Filters + Search */}
+      <div className="max-w-7xl w-full flex flex-wrap gap-4 items-center justify-center p-4">
         <div className="flex flex-col">
-          <label>Make</label>
-          <select value={makeFilter} onChange={e => { setMakeFilter(e.target.value); setModelFilter(""); }}>
+          <label className="text-blue-900 mb-1">Make</label>
+          <select
+            value={makeFilter}
+            onChange={(e) => { setMakeFilter(e.target.value); setModelFilter(""); }}
+            className="p-2 border border-blue-400 rounded-lg shadow-sm"
+          >
             <option value="">All Makes</option>
-            {makes.map((m,i) => <option key={i} value={m}>{m}</option>)}
+            {makes.map((m, i) => <option key={i} value={m}>{m}</option>)}
           </select>
         </div>
+
         <div className="flex flex-col">
-          <label>Model</label>
-          <select value={modelFilter} onChange={e => setModelFilter(e.target.value)} disabled={models.length===0}>
+          <label className="text-blue-900 mb-1">Model</label>
+          <select
+            value={modelFilter}
+            onChange={(e) => setModelFilter(e.target.value)}
+            disabled={models.length === 0}
+            className="p-2 border border-blue-400 rounded-lg shadow-sm"
+          >
             <option value="">All Models</option>
-            {models.map((m,i) => <option key={i} value={m}>{m}</option>)}
+            {models.map((m, i) => <option key={i} value={m}>{m}</option>)}
           </select>
         </div>
+
         <div className="flex flex-col">
-          <label>Year</label>
-          <select value={yearFilter} onChange={e => setYearFilter(e.target.value)}>
+          <label className="text-blue-900 mb-1">Year</label>
+          <select
+            value={yearFilter}
+            onChange={(e) => setYearFilter(e.target.value)}
+            className="p-2 border border-blue-400 rounded-lg shadow-sm"
+          >
             <option value="">All Years</option>
-            {years.map((y,i) => <option key={i} value={y}>{y}</option>)}
+            {years.map((y, i) => <option key={i} value={y}>{y}</option>)}
           </select>
         </div>
-        <div className="flex flex-col">
-          <label>Search</label>
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search..." />
+
+        <div className="flex flex-col flex-1 min-w-[200px]">
+          <label className="text-blue-900 mb-1">Search</label>
+          <input
+            type="text"
+            placeholder="Type make, model, or year..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="p-2 border border-blue-400 rounded-lg shadow-sm"
+          />
         </div>
       </div>
 
-      {/* DataTable */}
-      <DataTable
-        columns={columns}
-        data={visibleData}
-        pagination={false}
-        highlightOnHover
-        striped
-        responsive
-      />
+      {/* Data Table */}
+      <main className="max-w-7xl w-full bg-white rounded-xl shadow-lg p-6">
+        <DataTable
+          columns={columns}
+          data={visibleData}
+          pagination={false}
+          highlightOnHover
+          striped
+          responsive
+        />
+        <p className="text-sm text-blue-900 mt-2">
+          Showing {Math.min(visibleCount, filteredData.length)} of {filteredData.length} matching vehicles
+        </p>
+        {visibleCount < filteredData.length && (
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => setVisibleCount(prev => prev + BATCH_SIZE)}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+            >
+              Load More
+            </button>
+          </div>
+        )}
+      </main>
 
-      {visibleCount < filteredData.length && (
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={() => setVisibleCount(prev => prev + BATCH_SIZE)}
-            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Load More
-          </button>
-        </div>
-      )}
+      {/* Footer Section */}
+      <section className="max-w-7xl w-full bg-white rounded-xl shadow-lg p-6 text-blue-900">
+        <h3 className="text-xl font-bold mb-2">Why Fuel Efficiency Matters</h3>
+        <p>Choosing vehicles with higher MPG reduces fuel costs and environmental impact.</p>
+      </section>
+
     </div>
   );
 }
