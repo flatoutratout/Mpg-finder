@@ -57,7 +57,6 @@ export default function Home() {
     });
 
   const visibleData = filteredData.slice(0, visibleCount);
-
   const makes = [...new Set(vehicles.map(v => v.make))].sort();
   const models = [...new Set(vehicles.filter(v => !makeFilter || v.make === makeFilter).map(v => v.model))].sort();
   const years = [...new Set(filteredData.map(v => v.year))].sort();
@@ -75,7 +74,7 @@ export default function Home() {
       </Head>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white/90">
+      <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white/80">
         <div className="flex items-center space-x-4">
           <Image src="/logo.png" alt="MPG Finder Logo" width={200} height={200} />
           <h1 className="text-4xl font-extrabold text-gray-800">MPG Finder</h1>
@@ -83,7 +82,7 @@ export default function Home() {
       </header>
 
       {/* Intro */}
-      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
+      <section className="max-w-7xl mx-auto mt-6 p-6 bg-white/80 shadow-xl rounded-xl">
         <h2 className="text-2xl font-bold mb-4">Welcome to MPG Finder</h2>
         <p>
           Search and compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles. 
@@ -147,7 +146,7 @@ export default function Home() {
       </div>
 
       {/* Data Table */}
-      <main className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
+      <main className="max-w-7xl mx-auto mt-6 p-6 bg-white/80 shadow-xl rounded-xl">
         <DataTable
           columns={columns}
           data={visibleData}
