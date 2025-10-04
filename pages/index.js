@@ -92,7 +92,9 @@ export default function Home() {
         />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-r from-gray-50 via-white to-gray-100">
+      {/* 🔵 Blue gradient background wrapper */}
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200">
+        
         {/* Header */}
         <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white">
           <div className="flex items-center space-x-4">
