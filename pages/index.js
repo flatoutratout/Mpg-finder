@@ -1,3 +1,4 @@
+// pages/index.js
 import { useState, useEffect } from "react";
 import Papa from "papaparse";
 import DataTable from "react-data-table-component";
@@ -56,15 +57,17 @@ export default function Home() {
     });
 
   const visibleData = filteredData.slice(0, visibleCount);
+
   const makes = [...new Set(vehicles.map(v => v.make))].sort();
   const models = [...new Set(vehicles.filter(v => !makeFilter || v.make === makeFilter).map(v => v.model))].sort();
   const years = [...new Set(filteredData.map(v => v.year))].sort();
+
   const handleLoadMore = () => setVisibleCount(prev => prev + BATCH_SIZE);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200">
       <Head>
-        <title>MPG Finder</title>
+        <title>MPG Finder – Compare Fuel Economy & CO₂ Emissions</title>
         <meta
           name="description"
           content="Find and compare vehicle MPG, CO₂ emissions, and performance data. Filter by make, model, and year to make informed eco-friendly driving choices."
@@ -90,6 +93,7 @@ export default function Home() {
 
       {/* Filters */}
       <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
+        {/* Make */}
         <div>
           <label htmlFor="makeFilter" className="block mb-1">Make</label>
           <select
@@ -103,6 +107,7 @@ export default function Home() {
           </select>
         </div>
 
+        {/* Model */}
         <div>
           <label htmlFor="modelFilter" className="block mb-1">Model</label>
           <select
@@ -117,6 +122,7 @@ export default function Home() {
           </select>
         </div>
 
+        {/* Year */}
         <div>
           <label htmlFor="yearFilter" className="block mb-1">Year</label>
           <select
@@ -130,6 +136,7 @@ export default function Home() {
           </select>
         </div>
 
+        {/* Search */}
         <div className="flex-1 min-w-[200px]">
           <label htmlFor="searchInput" className="block mb-1">Search</label>
           <input
