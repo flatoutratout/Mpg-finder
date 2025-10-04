@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Papa from "papaparse";
 import DataTable from "react-data-table-component";
 import Image from "next/image";
+import Head from "next/head";
 
 export default function Home() {
   const [vehicles, setVehicles] = useState([]);
@@ -60,11 +61,40 @@ export default function Home() {
   const models = [...new Set(vehicles.filter(v => !makeFilter || v.make === makeFilter).map(v => v.model))].sort();
   const years = [...new Set(filteredData.map(v => v.year))].sort();
 
+  // SEO Data
+  const title = "MPG Finder – Compare Fuel Efficiency & CO₂ for All Vehicles";
+  const description = "Find MPG, CO₂ emissions, and performance data for thousands of cars. Filter by make, model, year and compare fuel efficiency to make informed choices.";
+  const siteUrl = "https://www.mpgfinder.com";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "MPG Finder",
+    "url": siteUrl,
+    "description": description
+  };
+
   return (
     <div
       className="min-h-screen"
       style={{ background: "linear-gradient(to bottom, #e0f0ff, #a3c4f7)" }}
     >
+      {/* SEO */}
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta name="robots" content="index, follow" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={siteUrl} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
+
       {/* Header */}
       <header className="flex items-center justify-between p-6 shadow-md bg-white/95 backdrop-blur-sm">
         <div className="flex items-center space-x-4">
