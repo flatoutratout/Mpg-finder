@@ -63,6 +63,7 @@ export default function Home() {
 
   const handleLoadMore = () => setVisibleCount((prev) => prev + BATCH_SIZE);
 
+  // JSON-LD ItemList (list of cars)
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -93,19 +94,17 @@ export default function Home() {
         />
       </Head>
 
-      {/* Full page subtle blue gradient */}
       <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 pb-12">
-
         {/* Header */}
-        <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white">
+        <header className="sticky top-0 z-50 flex items-center justify-center p-6 shadow-md bg-white/90 backdrop-blur">
           <div className="flex items-center space-x-4">
             <Image src="/logo.png" alt="MPG Finder Logo" width={200} height={200} />
             <h1 className="text-4xl font-extrabold text-gray-800">MPG Finder</h1>
           </div>
         </header>
 
-        {/* Intro */}
-        <section className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
+        {/* Intro Section */}
+        <section className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
           <h2 className="text-2xl font-bold mb-4">Welcome to MPG Finder</h2>
           <p>
             Search and compare fuel efficiency, CO₂ emissions, and performance data for thousands of vehicles. 
@@ -114,25 +113,22 @@ export default function Home() {
         </section>
 
         {/* Filters */}
-        <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4">
+        <div className="max-w-7xl mx-auto mt-6 flex flex-wrap gap-4 items-center justify-center p-4 bg-white/90 rounded-xl shadow">
+          {/* Make Filter */}
           <div>
             <label htmlFor="makeFilter" className="block mb-1">Make</label>
             <select
               id="makeFilter"
               value={makeFilter}
-              onChange={(e) => {
-                setMakeFilter(e.target.value);
-                setModelFilter("");
-              }}
+              onChange={(e) => { setMakeFilter(e.target.value); setModelFilter(""); }}
               className="p-2 border border-gray-300 rounded-lg"
             >
               <option value="">All Makes</option>
-              {makes.map((make, idx) => (
-                <option key={`make-${idx}`} value={make}>{make}</option>
-              ))}
+              {makes.map((make, idx) => <option key={`make-${idx}`} value={make}>{make}</option>)}
             </select>
           </div>
 
+          {/* Model Filter */}
           <div>
             <label htmlFor="modelFilter" className="block mb-1">Model</label>
             <select
@@ -143,12 +139,11 @@ export default function Home() {
               className="p-2 border border-gray-300 rounded-lg"
             >
               <option value="">All Models</option>
-              {models.map((model, idx) => (
-                <option key={`model-${idx}`} value={model}>{model}</option>
-              ))}
+              {models.map((model, idx) => <option key={`model-${idx}`} value={model}>{model}</option>)}
             </select>
           </div>
 
+          {/* Year Filter */}
           <div>
             <label htmlFor="yearFilter" className="block mb-1">Year</label>
             <select
@@ -158,12 +153,11 @@ export default function Home() {
               className="p-2 border border-gray-300 rounded-lg"
             >
               <option value="">All Years</option>
-              {years.map((year, idx) => (
-                <option key={`year-${idx}`} value={year}>{year}</option>
-              ))}
+              {years.map((year, idx) => <option key={`year-${idx}`} value={year}>{year}</option>)}
             </select>
           </div>
 
+          {/* Search Input */}
           <div className="flex-1 min-w-[200px]">
             <label htmlFor="searchInput" className="block mb-1">Search</label>
             <input
@@ -178,7 +172,7 @@ export default function Home() {
         </div>
 
         {/* Data Table */}
-        <main className="max-w-7xl mx-auto mt-6 p-6 bg-white shadow-xl rounded-xl">
+        <main className="max-w-7xl mx-auto mt-6 p-6 bg-white/90 shadow-xl rounded-xl">
           <DataTable
             columns={columns}
             data={visibleData}
